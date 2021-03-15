@@ -1,21 +1,20 @@
 #include "Input.h"
 #include "Button.h"
 #include "Pot.h"
+#include "PWM.h"
 Button b;
 Pot p;
 
 Input* inputs[2];
+PWM pwm(22);
 
 void setup() {
-  // put your setup code here, to run once:
-  inputs[0] = new Button();
-  inputs[0]->setPin(20);
-  inputs[1] = new Pot();
-  inputs[1]->setPin(21);
+  pwm.begin(1);
+  Serial.begin(115200);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  float potRead = inputs[1]->read();
-  Serial.println(potRead);
+  int pwmChange = pwm.getValue();
+  Serial.println(pwmChange);
+  delay(50);
 }

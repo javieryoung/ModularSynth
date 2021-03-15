@@ -22,7 +22,7 @@ Button::Button() {
 
 void Button::setPin(int pin) {
     _pin = pin;
-    pinMode(_pin, INPUT_PULLDOWN);
+    pinMode(_pin, INPUT_PULLUP);
 }
 
 float Button::read() {
