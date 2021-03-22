@@ -24,7 +24,7 @@ class Pot : public Input
     float _lastRead;
     float _minValue = 0.00;
     float _maxValue = 1.00;
-    float _tolerance = 0.02;
+    float _tolerance = 0.01;
 };
 
 
@@ -57,6 +57,8 @@ float Pot::read() {
   if (_EMA_S > _maxValueAverage) _maxValueAverage = _EMA_S;
   float normalized = _EMA_S / (float)_maxValueAverage;
   float toRet = normalized * (_maxValue - _minValue) + _minValue;
+  if (toRet > _maxValue * (1-_tolerance)) return _maxValue;
+  if (toRet < _maxValue * (_tolerance)) return _minValue;
   return toRet;
 }
 

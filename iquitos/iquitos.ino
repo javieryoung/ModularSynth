@@ -8,51 +8,50 @@
 #include "Input.h"
 #include "Button.h"
 
-
 // GUItool: begin automatically generated code
-AudioSynthWaveform       FMwave;     //xy=426.5555725097656,534.3333721160889
-AudioSynthWaveformModulated waveform1;      //xy=969,257.9999942779541
-AudioSynthWaveformModulated waveform2;      //xy=969,306.9999942779541
-AudioSynthWaveformModulated waveform3;      //xy=969,352.9999942779541
-AudioSynthWaveformModulated waveform4;      //xy=969,401.9999942779541
-AudioSynthWaveformModulated waveform5;      //xy=970,460.9999942779541
-AudioSynthWaveformModulated waveform6;      //xy=970,508.9999942779541
-AudioSynthWaveformModulated waveform7;      //xy=970,555.9999942779541
-AudioSynthWaveformModulated waveform8;      //xy=970,603.9999942779541
-AudioSynthWaveformModulated waveform9;      //xy=971,656.9999942779541
-AudioSynthWaveformModulated waveform10;     //xy=971,705.9999942779541
-AudioSynthWaveformModulated waveform11;     //xy=971,751.9999942779541
-AudioSynthWaveformModulated waveform12;     //xy=971,800.9999942779541
-AudioSynthWaveformModulated waveform13;     //xy=972,858.9999942779541
-AudioSynthWaveformModulated waveform14;     //xy=972,907.9999942779541
-AudioSynthWaveformModulated waveform15;     //xy=972,953.9999942779541
-AudioSynthWaveformModulated waveform16;     //xy=972,1002.9999942779541
-AudioSynthWaveformModulated waveformPrincipal; //xy=1007.0000877380371,176.000093460083
-AudioEffectEnvelope      envelopeWaveform3; //xy=1160,355.9999942779541
-AudioEffectEnvelope      envelopeWaveform4; //xy=1171,402.9999942779541
-AudioEffectEnvelope      envelopeWaveform9; //xy=1171,650.9999942779541
-AudioEffectEnvelope      envelopeWaveform2; //xy=1173,295.9999942779541
-AudioEffectEnvelope      envelopeWaveform5; //xy=1180,460.9999942779541
-AudioEffectEnvelope      envelopeWaveform11; //xy=1181,750.9999942779541
-AudioEffectEnvelope      envelopeWaveform6; //xy=1182,512.9999942779541
-AudioEffectEnvelope      envelopeWaveform1; //xy=1188,251.9999942779541
-AudioEffectEnvelope      envelopeWaveform10; //xy=1188,701.9999942779541
-AudioEffectEnvelope      envelopeWaveform7; //xy=1190,554.9999942779541
-AudioEffectEnvelope      envelopeWaveform14; //xy=1196,896.9999942779541
-AudioEffectEnvelope      envelopeWaveform8; //xy=1198,596.9999942779541
-AudioEffectEnvelope      envelopeWaveform12; //xy=1198,795.9999942779541
-AudioEffectEnvelope      envelopeWaveform13; //xy=1207,849.9999942779541
-AudioEffectEnvelope      envelopeWaveform16; //xy=1207,994.9999942779541
-AudioEffectEnvelope      envelopeWaveform15; //xy=1213,937.9999942779541
-AudioEffectEnvelope      envelopePrincipal; //xy=1345.666763305664,177.22233772277832
-AudioMixer4              mixer1;         //xy=1574,346.9999942779541
-AudioMixer4              mixer2;         //xy=1575,548.9999942779541
-AudioMixer4              mixer3;         //xy=1577,745.9999942779541
-AudioMixer4              mixer4;         //xy=1578,947.9999942779541
-AudioMixer4              mixerOscillators; //xy=1852,655.9999942779541
-AudioMixer4              mixerFinal;     //xy=2232.000030517578,643.0000343322754
-AudioAmplifier           amp1;           //xy=2416,633.9999942779541
-AudioOutputI2S           i2s1;           //xy=2563,644.9999942779541
+AudioSynthWaveform       FMwave;         //xy=597.5,705.5
+AudioSynthWaveformModulated waveform1;      //xy=1140.5,428.5
+AudioSynthWaveformModulated waveform2;      //xy=1140.5,477.5
+AudioSynthWaveformModulated waveform3;      //xy=1140.5,523.5
+AudioSynthWaveformModulated waveform4;      //xy=1140.5,572.5
+AudioSynthWaveformModulated waveform5;      //xy=1141.5,631.5
+AudioSynthWaveformModulated waveform6;      //xy=1141.5,679.5
+AudioSynthWaveformModulated waveform7;      //xy=1141.5,726.5
+AudioSynthWaveformModulated waveform8;      //xy=1141.5,774.5
+AudioSynthWaveformModulated waveform9;      //xy=1142.5,827.5
+AudioSynthWaveformModulated waveform10;     //xy=1142.5,876.5
+AudioSynthWaveformModulated waveform11;     //xy=1142.5,922.5
+AudioSynthWaveformModulated waveform12;     //xy=1142.5,971.5
+AudioSynthWaveformModulated waveform13;     //xy=1143.5,1029.5
+AudioSynthWaveformModulated waveform14;     //xy=1143.5,1078.5
+AudioSynthWaveformModulated waveform15;     //xy=1143.5,1124.5
+AudioSynthWaveformModulated waveform16;     //xy=1143.5,1173.5
+AudioSynthWaveformModulated waveformPrincipal; //xy=1178.5,347.5
+AudioEffectEnvelope      envelopeWaveform3; //xy=1331.5,526.5
+AudioEffectEnvelope      envelopeWaveform4; //xy=1342.5,573.5
+AudioEffectEnvelope      envelopeWaveform9; //xy=1342.5,821.5
+AudioEffectEnvelope      envelopeWaveform2; //xy=1344.5,466.5
+AudioEffectEnvelope      envelopeWaveform5; //xy=1351.5,631.5
+AudioEffectEnvelope      envelopeWaveform11; //xy=1352.5,921.5
+AudioEffectEnvelope      envelopeWaveform6; //xy=1353.5,683.5
+AudioEffectEnvelope      envelopeWaveform1; //xy=1359.5,422.5
+AudioEffectEnvelope      envelopeWaveform10; //xy=1359.5,872.5
+AudioEffectEnvelope      envelopeWaveform7; //xy=1361.5,725.5
+AudioEffectEnvelope      envelopeWaveform14; //xy=1367.5,1067.5
+AudioEffectEnvelope      envelopeWaveform8; //xy=1369.5,767.5
+AudioEffectEnvelope      envelopeWaveform12; //xy=1369.5,966.5
+AudioEffectEnvelope      envelopeWaveform13; //xy=1378.5,1020.5
+AudioEffectEnvelope      envelopeWaveform16; //xy=1378.5,1165.5
+AudioEffectEnvelope      envelopeWaveform15; //xy=1384.5,1108.5
+AudioEffectEnvelope      envelopePrincipal; //xy=1516.5,348.5
+AudioMixer4              mixer1;         //xy=1745.5,517.5
+AudioMixer4              mixer2;         //xy=1746.5,719.5
+AudioMixer4              mixer3;         //xy=1748.5,916.5
+AudioMixer4              mixer4;         //xy=1749.5,1118.5
+AudioMixer4              mixerOscillators; //xy=2023.5,826.5
+AudioMixer4              mixerFinal;     //xy=2288.500072479248,768.2500228881836
+AudioAmplifier           amp1;           //xy=2517.50008392334,759.5000228881836
+AudioOutputI2S           i2s1;           //xy=2702.0000915527344,760.5000219345093
 AudioConnection          patchCord1(FMwave, 0, waveform1, 0);
 AudioConnection          patchCord2(FMwave, 0, waveform2, 0);
 AudioConnection          patchCord3(FMwave, 0, waveform3, 0);
@@ -112,8 +111,10 @@ AudioConnection          patchCord56(mixerOscillators, 0, mixerFinal, 1);
 AudioConnection          patchCord57(mixerFinal, amp1);
 AudioConnection          patchCord58(amp1, 0, i2s1, 0);
 AudioConnection          patchCord59(amp1, 0, i2s1, 1);
-AudioControlSGTL5000     sgtl5000_1;     //xy=1912,927.9999942779541
+AudioControlSGTL5000     sgtl5000_1;     //xy=2083.5,1098.5
 // GUItool: end automatically generated code
+
+
 
 
 
@@ -149,7 +150,7 @@ int randomSwirl = 0;
 float detune = 0.0;
 
 void setup() {
-  AudioMemory(100);
+  AudioMemory(120);
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.6);
 
@@ -158,16 +159,16 @@ void setup() {
     waveforms[i]->amplitude(1);
     waveforms[i]->frequencyModulation(1);
 
-    envelopes[i]->attack(100);
+    envelopes[i]->attack(10);
     envelopes[i]->decay(1);
     envelopes[i]->sustain(1);
-    envelopes[i]->release(200);
+    envelopes[i]->release(10);
     
   }
-  envelopePrincipal.attack(100);
+  envelopePrincipal.attack(10);
   envelopePrincipal.decay(1);
   envelopePrincipal.sustain(1);
-  envelopePrincipal.release(500);
+  envelopePrincipal.release(10);
 
   waveformPrincipal.begin(WAVEFORM_SINE);
   waveformPrincipal.amplitude(1);
@@ -233,6 +234,7 @@ void setup() {
   multiplexer.getObject(21)->setLimits(0,4); // fm waveshape
   multiplexer.getObject(23)->setLimits(0,6); // root note
   multiplexer.getObject(4)->setLimits(0.5,1.5); // detune
+  multiplexer.getObject(0)->setLimits(0,340); // delay time
 
   /*  
   multiplexer.getObject(5)->setLimits(1,6);
@@ -241,6 +243,7 @@ void setup() {
   Serial.println(1);
 }
 
+bool buttonState = 1.0;
 void loop() {
 
   float results [32] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
@@ -253,7 +256,16 @@ void loop() {
         if (changed[i]){
           Serial.println(i);
         }
-
+        if (i == 29 && changed[i] && buttonState != results[i]) {
+          Serial.println("Boton");
+          int usoMemoria = AudioMemoryUsageMax();
+          Serial.println("Uso memoria: " + (String)usoMemoria);
+          if (results[i] == 1.0)
+            stopEnvelopes();
+          else
+            activateEnvelopes();
+          buttonState = results[i];
+        }
         if (changed[3]) {
           totalVoices = results[3];
           Serial.println("voices: " +  (String)totalVoices);
@@ -326,6 +338,11 @@ void loop() {
         if (changed[31]) {
           fmMode = results[31];
           Serial.println("fmMode: " +  (String)fmMode);
+        }
+        if (changed[0]) {
+          int delay = results[0];
+          //delay1.delay(1, delay);
+          Serial.println("delay: " +  (String)delay);
         }
         if (changed[21]) {
           int fmWaveform = results[21];
@@ -489,6 +506,7 @@ void activateEnvelopes() {
   for (int i = totalVoices; i < 16; i++) 
     envelopes[i]->noteOff();
 }
+
 
 
 

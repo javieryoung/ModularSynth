@@ -6,15 +6,15 @@ Button b;
 Pot p;
 
 Input* inputs[2];
-PWM pwm(22);
+PWM pwmClock0(17);
 
 void setup() {
   pwm.begin(1);
+  pwmClock0.begin(1);
   Serial.begin(115200);
 }
 
-void loop() {
-  int pwmChange = pwm.getValue();
-  Serial.println(pwmChange);
-  delay(50);
+void loop() 
+  long readClock0 = pwmClock0.getValue();
+  Serial.println(readClock0);
 }
