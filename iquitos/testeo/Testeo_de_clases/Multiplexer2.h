@@ -6,6 +6,7 @@
 #include "Input.h"
 #include "Button.h"
 #include "Pot.h"
+#include "Piezo.h"
 //#include <SerialFlash.h>
 
 class Multiplexer2
@@ -52,6 +53,7 @@ void Multiplexer2::createArrayOfInputs(char types[16]) {
   for (int i = 0; i < 16; i++) {
     if (types[i] == 'd') _arrayOfInputs[i] = new Button();
     if (types[i] == 'a') _arrayOfInputs[i] = new Pot();
+    if (types[i] == 'p') _arrayOfInputs[i] = new Piezo();
   }
   for (int i = 0; i < 8; i++) {
     _arrayOfInputs[i]->setPin(_inputPin1);
