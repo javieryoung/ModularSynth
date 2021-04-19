@@ -63,7 +63,7 @@ void Multiplexer2::createArrayOfInputs(char types[16]) {
 
 bool Multiplexer2::read(float *valuesArray, bool *changedArray) {
   long nowInMicros = micros();
-  if (nowInMicros - _lastUpdate > 100) {
+  if (nowInMicros - _lastUpdate > 50) {
     if (_arrayOfInputs[_currentRead]->changed()) {
       changes[_currentRead] = true;
     } else {

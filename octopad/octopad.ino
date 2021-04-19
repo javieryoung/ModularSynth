@@ -44,17 +44,17 @@ int firstDrum = 0;
 int lastDrum = 49;
 
 Multiplexer2 mux;
-int currentDrum = 1;
+int currentDrum = 6;
 void setup()   {      
   Serial.begin(9600);
-  AudioMemory(2);
+  AudioMemory(10);
   mux.setPins(2,3,4,17,16);
   char arrayOfInputs2 [16]= {'p','p','p','p','p','p','p','p','d','d','d','d','d','d','d','d'};
   mux.createArrayOfInputs(arrayOfInputs2);
 
 
   sgtl5000_1.enable();
-  sgtl5000_1.volume(0.2);
+  sgtl5000_1.volume(0.9);
 
   SPI.setMOSI(7);
   SPI.setSCK(14);
@@ -93,7 +93,7 @@ void setup()   {
 
 
 void setDrumKit(int which) { // rellena el array fileNames con los nombres de los archivos correspondientes
-  Serial.println("Seleccionado: " + (String)which);
+  // Serial.println("Seleccionado: " + (String)which);
   fileNames[0] = (String)which + (String)"/snare.wav";
   fileNames[1] = (String)which + (String)"/kick.wav";
   fileNames[2] = (String)which + (String)"/tom1.wav";
@@ -113,7 +113,7 @@ void playSound(int i, float velocity) {
   char finalFileName[20];
   fileNames[i].toCharArray(finalFileName, str_len);
 
-  Serial.println(finalFileName);
+  // Serial.println(finalFileName);
   
   // closed hh stops open hh
   if (i == 5) playingHihatOpened = players[lastPlayed];
@@ -124,9 +124,10 @@ void playSound(int i, float velocity) {
 
   lastPlayed++;
   if (lastPlayed == 4) lastPlayed = 0;
-  Serial.println("Memoria usada: " + (String)AudioMemoryUsageMax());
+  // Serial.println("Memoria usada: " + (String)AudioMemoryUsageMax());
 }
 
+long lastSoundPlayed = 0;
 void loop()                     
 {
   
@@ -134,14 +135,26 @@ void loop()
   float results [16] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
   bool changed [16] = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
   bool buttonsCompleted = mux.read(results, changed);
+  int strongest = 0;
+  float strongestSpeed = 0;
   if (buttonsCompleted) {
     for (int i = 0; i<16; i++) {
-      if (changed[i] && results[i] && i >= 0 && i <= 8 && results[i] > 100) {
-        Serial.println(results[i]);
-        playSound(i, 0.25);
+      if (changed[i] && results[i] && i >= 0 && i <= 7) {
+        float speed = results[i];
+        if (strongestSpeed < speed) {
+          strongestSpeed = speed;
+          strongest = i;
+        }
       }
     }
+    if (strongestSpeed > 10 && micros() - lastSoundPlayed > 2000) {
+      lastSoundPlayed = micros();
+      Serial.println(strongest);
+      playSound(strongest, (strongestSpeed / 1023) * 0.25);
+    }
   }
+
+
 
 /*
 
