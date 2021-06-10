@@ -2,7 +2,6 @@
 #define Button_guard
 
 #include "Arduino.h"
-#include "Input.h"
 class Button
 {
   public:

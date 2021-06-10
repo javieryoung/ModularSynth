@@ -2,8 +2,6 @@
 #define Pot_guard
 
 #include "Arduino.h"
-#include "Input.h"
-//#include <SerialFlash.h>
 
 
 class Pot

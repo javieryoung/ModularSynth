@@ -6,7 +6,6 @@
 
 #include "Button.h"
 #include "Pot.h"
-#include "Led.h"
 //#include <SerialFlash.h>
 
 class Multiplexer5
@@ -14,15 +13,15 @@ class Multiplexer5
   public:
     Multiplexer5();
     void start();
-    bool read(float *, bool *, float *, bool *);
-    Led* getLed(int index);
+    bool read(float *, bool *, float *, bool *, int);
+    int currentReadToLed1(int);
+    int currentReadToLed2(int);
 
   private:
-    int _selectorPin1, _selectorPin2, _selectorPin3, _inputPin1, _inputPin2, _inputPin3, _inputPin4;
-    Led * _leds [16];
+    int _inputPin1, _inputPin2, _inputPin3, _inputPin4;
     Pot * _pots [16];
     Button * _buttons [8];
-    int _currentRead;
+    int _currentRead = 0;
     long _lastUpdate;
     int _modes [8][3] = { {LOW, LOW, LOW}, {LOW, LOW, HIGH}, {LOW, HIGH, LOW}, {LOW, HIGH, HIGH}, {HIGH, LOW, LOW}, {HIGH, LOW, HIGH}, {HIGH, HIGH, LOW}, {HIGH, HIGH, HIGH} };
     
@@ -44,14 +43,14 @@ void Multiplexer5::start() {
   pinMode(2, OUTPUT);
   pinMode(3, OUTPUT);
   pinMode(4, OUTPUT);
-  pinMode(17, INPUT_PULLDOWN); // leds 0-7
-  pinMode(21, INPUT_PULLDOWN); // leds 8-16
+  pinMode(17, OUTPUT); // leds 0-7
+  pinMode(21, OUTPUT); // leds 8-16
+  
+
   pinMode(16, INPUT_PULLDOWN); // pot 0-7
   pinMode(20, INPUT_PULLDOWN); // pot 8-16
   pinMode(5, INPUT_PULLUP); // buttons
   for (int i = 0; i < 8; i++) {
-    _leds[i] = new Led();
-    _leds[i]->setPin(17);
     _buttons[i] = new Button();
     _buttons[i]->setPin(5);
     _pots[i] = new Pot();
@@ -59,8 +58,6 @@ void Multiplexer5::start() {
   }
   
   for (int i = 8; i < 16; i++) {
-    _leds[i] = new Led();
-    _leds[i]->setPin(21);
     _pots[i] = new Pot();
     _pots[i]->setPin(20);
   }
@@ -68,18 +65,47 @@ void Multiplexer5::start() {
   pinMode(13,OUTPUT);
 }
 
-bool Multiplexer5::read(float *valuesPots, bool *changedPots, float *valuesButtons, bool *changedButtons) {
+long ledChanged = 0;
+int lastCounter = 0;
+
+bool Multiplexer5::read(float *valuesPots, bool *changedPots, float *valuesButtons, bool *changedButtons, int counter) {
   long nowInMicros = micros();
+  
+
+  if (lastCounter != counter) {
+    ledChanged = millis();
+    lastCounter = counter;
+  }
+  if (millis() - ledChanged < 200) {
+    if (counter >= 8) {
+      if (currentReadToLed2(_currentRead) == counter-8) {
+        digitalWrite(21,HIGH);
+      } else {
+        digitalWrite(21,LOW);
+      }
+      digitalWrite(17,LOW);
+    } else {
+      if (currentReadToLed1(_currentRead) == counter) {
+        digitalWrite(17,HIGH);
+      } else {
+        digitalWrite(17,LOW);
+      }
+      digitalWrite(21,LOW);
+    }
+  } else {
+    digitalWrite(17,LOW);
+    digitalWrite(21,LOW);
+  }
+
   if (nowInMicros - _lastUpdate > 50) {
+    _lastUpdate = micros();
 
-    _leds[_currentRead]->reload();
-    _leds[_currentRead+8]->reload();
-
+    
+    
     _changedPots[_currentRead] = _pots[_currentRead]->changed();
     _changedPots[_currentRead+8] = _pots[_currentRead+8]->changed();
 
     _changedButtons[_currentRead] = _buttons[_currentRead]->changed();
-    _changedButtons[_currentRead+8] = _buttons[_currentRead+8]->changed();
     
     _resultsPots[_currentRead] = _pots[_currentRead]->read();
     _resultsPots[_currentRead+8] = _pots[_currentRead+8]->read();
@@ -88,19 +114,19 @@ bool Multiplexer5::read(float *valuesPots, bool *changedPots, float *valuesButto
     
     _currentRead++;
     if (_currentRead == 8) _currentRead = 0;
-    digitalWrite(_selectorPin1, _modes[_currentRead][0]);
-    digitalWrite(_selectorPin2, _modes[_currentRead][1]);
-    digitalWrite(_selectorPin3, _modes[_currentRead][2]);
-
-    _lastUpdate = micros();
+    digitalWrite(2, _modes[_currentRead][0]);
+    digitalWrite(3, _modes[_currentRead][1]);
+    digitalWrite(4, _modes[_currentRead][2]);
 
     if (_currentRead == 0) {
       for (int i = 0; i < 16; i++) {
         valuesPots[i] = _resultsPots[i];
         changedPots[i] = _changedPots[i];
 
-        valuesButtons[i] = _resultsButtons[i];
-        changedButtons[i] = _changedButtons[i];
+        if (i < 8) {
+          valuesButtons[i] = _resultsButtons[i];
+          changedButtons[i] = _changedButtons[i];
+        }
       }
       return true;
     }
@@ -109,11 +135,28 @@ bool Multiplexer5::read(float *valuesPots, bool *changedPots, float *valuesButto
   
 }
 
-Led* Multiplexer5::getLed(int index) {
-  return _leds[index];
+
+int Multiplexer5::currentReadToLed1(int currentRead) {
+  if (currentRead == 0) return 0;
+  if (currentRead == 1) return 5;
+  if (currentRead == 2) return 1;
+  if (currentRead == 3) return 6;
+  if (currentRead == 4) return 2;
+  if (currentRead == 5) return 3;
+  if (currentRead == 6) return 7;
+  if (currentRead == 7) return 4;
+  return 0;
 }
-
-
-
+int Multiplexer5::currentReadToLed2(int currentRead) {
+  if (currentRead == 0) return 3;
+  if (currentRead == 1) return 4;
+  if (currentRead == 2) return 6;
+  if (currentRead == 3) return 5;
+  if (currentRead == 4) return 7;
+  if (currentRead == 5) return 1;
+  if (currentRead == 6) return 2;
+  if (currentRead == 7) return 0;
+  return 0;
+}
 
 #endif
