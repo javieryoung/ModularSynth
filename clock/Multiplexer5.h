@@ -55,11 +55,13 @@ void Multiplexer5::start() {
     _buttons[i]->setPin(5);
     _pots[i] = new Pot();
     _pots[i]->setPin(16);
+    _pots[i]->setLimits(0,255);
   }
   
   for (int i = 8; i < 16; i++) {
     _pots[i] = new Pot();
     _pots[i]->setPin(20);
+    _pots[i]->setLimits(0,255);
   }
 
   pinMode(13,OUTPUT);

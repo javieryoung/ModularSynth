@@ -137,7 +137,7 @@ void loop()
   bool buttonsCompleted = mux.read(results, changed);
   int strongest = 0;
   float strongestSpeed = 0;
-  if (buttonsCompleted) {
+  if (buttonsCompleted && millis() - lastSoundPlayed > 20) {
     for (int i = 0; i<16; i++) {
       if (changed[i] && results[i] && i >= 0 && i <= 7) {
         float speed = results[i];
@@ -147,8 +147,8 @@ void loop()
         }
       }
     }
-    if (strongestSpeed > 10 && micros() - lastSoundPlayed > 2000) {
-      lastSoundPlayed = micros();
+    if (strongestSpeed > 10) {
+      lastSoundPlayed = millis();
       Serial.println(strongest);
       playSound(strongest, (strongestSpeed / 1023) * 0.25);
     }
