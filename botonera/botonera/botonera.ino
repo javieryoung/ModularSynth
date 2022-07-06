@@ -123,7 +123,7 @@ void loop() {
 
     if (changed[12]) {
       Serial.println(results[12]);
-      //master.gain(results[12]);
+      master.gain(1-results[12]);
     }
 
     if (changed[8] || changed[14]) {
