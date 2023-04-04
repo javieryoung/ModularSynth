@@ -6,15 +6,23 @@ class Input
 {
   public:
     Input();
-    virtual void draw(ILI9341_t3 *tft);
+    virtual void draw();
     virtual bool touched(float x, float y);
+    virtual void moved(String which, int direction);
+    void select(bool s);
     
-  private:
+  protected:
+    bool selected;
 
 };
 
 Input::Input() {
   
+}
+
+void Input::select(bool s) {
+  this->selected = s;
+  this->draw();
 }
 
 

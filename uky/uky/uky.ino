@@ -1,5 +1,9 @@
 
 
+
+#define PRIMARY 0xFFFF
+#define BLACK 0x0000
+
 #include "SPI.h"
 #include "ILI9341_t3.h"
 #include <XPT2046_Touchscreen.h>
@@ -31,6 +35,9 @@
 #define TFT_MOSI     7
 #define TFT_SCLK    14
 #define TFT_MISO    12
+
+
+
 ILI9341_t3 tft = ILI9341_t3(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_MISO);
 
 #define CS_PIN  8
@@ -62,13 +69,19 @@ void setup() {
   tft.setTextSize(2);
   
   currentScreen = new Screen(&tft);
-  Input* k = new TwoKnobs(100, 100, 50, 50, 15, "hola", "chau");
+  Input* k = new TwoKnobs(&tft, 20, 40, 50, 50, 15, "hola", "chau");
   currentScreen->addInput(k);
+
+  
+  Input* k2 = new TwoKnobs(&tft, 20, 160, 50, 50, 15, " hi ", " bye ");
+  currentScreen->addInput(k2);
 
   currentScreen->draw();
 
 }
 
+int positionLeft = 0;
+int positionRight = 0;
 
 void loop(void) {
   
@@ -85,13 +98,13 @@ void loop(void) {
 
     float px = (1 - (p.x-bottomRightX) / (topLeftX-bottomRightX)) * 320;
     float py = (1 - (p.y-bottomRightY) / (topLeftY-bottomRightY)) * 240;
-    
+    /*
     Serial.print("X = "); Serial.print(px);
     Serial.print("\tY = "); Serial.println(py);
+    */
     
     currentScreen->touched(px, py, p.z);
   }
-  /*
   long nowInMillis = millis();
   if (nowInMillis - _lastUpdate > 50) {
     _lastUpdate = millis();
@@ -99,21 +112,21 @@ void loop(void) {
     newLeft = encoderLeft.read();
     if (newLeft != positionLeft) {
       if(newLeft < positionLeft) {
-        tft.println("Left >");
+        currentScreen->moved("left", 1.0);
       } else {
-        tft.println("Left <");
+        currentScreen->moved("left", -1.0);
       }
       positionLeft = newLeft;
     }
     newRight = encoderRight.read();
     if (newRight != positionRight) {
       if(newRight < positionRight) {
-        tft.println("Right >");
+        currentScreen->moved("right", 1.0);
       } else {
-        tft.println("Right <");
+        currentScreen->moved("right", -1.0);
       }
       positionRight = newRight;
     }
   }
-  */
+  currentScreen->refresh();
 }
