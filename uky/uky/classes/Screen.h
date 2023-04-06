@@ -3,10 +3,12 @@
 
 #include "Arduino.h"
 #include "Input/Input.h"
+
+
 class Screen
 {
   public:
-    Screen(ILI9341_t3 *tft);
+    Screen();
     void addInput(Input *&i);
     void draw();
     void touched(float x, float y, float pressure);
@@ -15,14 +17,12 @@ class Screen
     
   private:
     LinkedList<Input*> inputs;
-    ILI9341_t3 *tft;
     Input* selectedInput;
     long lastRefresh;
 
 };
 
-Screen::Screen(ILI9341_t3 *tft) {
-  this->tft = tft;
+Screen::Screen() {
   this->inputs = LinkedList<Input*>();
   this->selectedInput = NULL;
 }
@@ -58,7 +58,7 @@ void Screen::refresh() {
     if (millis() - this->lastRefresh > 500) {
         this->lastRefresh = millis();
         for(int i = 0; i < this->inputs.size(); i++) {
-            this->inputs.get(i)->draw();
+            this->inputs.get(i)->refresh();
         }
     }
 }

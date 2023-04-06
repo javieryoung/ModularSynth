@@ -5,9 +5,13 @@
 #define BLACK 0x0000
 
 #include "SPI.h"
-#include "ILI9341_t3.h"
+#include "Adafruit_ILI9341.h"
 #include <XPT2046_Touchscreen.h>
 #include <Encoder.h>
+#define PI 3.1415926535897932384626433832795
+
+#include "functions.h"
+
 
 
 #include "classes/LinkedList.h"
@@ -36,12 +40,13 @@
 #define TFT_SCLK    14
 #define TFT_MISO    12
 
-
-
-ILI9341_t3 tft = ILI9341_t3(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_MISO);
-
 #define CS_PIN  8
 XPT2046_Touchscreen ts(CS_PIN); 
+
+
+// ILI9341_t3 tft = ILI9341_t3(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_MISO);
+Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
+
 
 Encoder encoderLeft(1, 3);
 Encoder encoderRight(4, 5);
@@ -68,12 +73,12 @@ void setup() {
   tft.setTextColor(ILI9341_YELLOW);
   tft.setTextSize(2);
   
-  currentScreen = new Screen(&tft);
-  Input* k = new TwoKnobs(&tft, 20, 40, 50, 50, 15, "hola", "chau");
+  currentScreen = new Screen();
+  Input* k = new TwoKnobs(20, 40, 50, 50, 15, "hola", "chau");
   currentScreen->addInput(k);
 
   
-  Input* k2 = new TwoKnobs(&tft, 20, 160, 50, 50, 15, " hi ", " bye ");
+  Input* k2 = new TwoKnobs(20, 160, 50, 50, 15, " hi ", " bye ");
   currentScreen->addInput(k2);
 
   currentScreen->draw();
@@ -130,3 +135,4 @@ void loop(void) {
   }
   currentScreen->refresh();
 }
+

@@ -1,52 +1,86 @@
 #ifndef Knob_guard
 #define Knob_guard
 
+
 #include "Arduino.h"
 #include "Input.h"
+
+
+extern Adafruit_ILI9341 tft;
+
+
+
 
 class Knob : public Input
 {
   public:
-    Knob(ILI9341_t3 *tft, float x, float y, float w, float h, String label);
+    Knob(float x, float y, float w, float h, String label, float minVal, float maxVal);
     void draw();
     bool touched(float x, float y);
     void moved(String which, int direction);
+    void refresh();
     
   private:
-    ILI9341_t3 *tft;
-    float x, y, w, h;
+    float x, y, w, h, minVal, maxVal;
     String label;
     int value;
+    int last_value; // only to know when to refresh
     long changed;
 
 };
 
-Knob::Knob(ILI9341_t3 *tft, float x, float y, float w, float h, String label) {
-  this->tft = tft;
+Knob::Knob(float x, float y, float w, float h, String label, float minVal = 0, float maxVal = 15) {
   this->x = x;
   this->y = y;
   this->h = h;
   this->w = w;
   this->label = label;
   this->value = 0;
+  this->last_value = 1;
   this->changed = 0;
+  this->minVal = minVal;
+  this->maxVal = maxVal;
 }
 
 void Knob::draw() {
-  this->tft->fillRect(this->x, this->y, this->w, this->h+25, BLACK);
   float centerx = this->x + this->w/2;
   float centery = this->y + this->h/2;
-  float radius = min(this->w, this->h)/2;
-  this->tft->drawCircle(centerx, centery, radius, 0xFFFF);
+  float r = min(this->w, this->h)/2;
+  if (this->value != this->last_value) {
+    // vaciar circulo anterior
+    for (int i = 0; i < r; i++) {
+      tft.fillCircle(centerx, centery, i, BLACK);
+    }
+    // borrar texto anterior
+    tft.fillRect(this->x, this->y + this->h+5, this->w, 22, BLACK);
+
+    // dibujar circulo
+    int thick = 2;
+    for (int i = 0; i < thick; i++) {
+        tft.drawCircle(centerx, centery, r-i, PRIMARY);
+    }
+    // Knob line:
+    float angle = this->value/this->maxVal * PI*1.5 - (2*PI)-(PI*1.25);
+    float catOp = sin(angle) * r;
+    float catAdy = cos(angle) * r;
+    tft.drawLine(centerx, centery, centerx+catAdy, centery+catOp, PRIMARY);
+    tft.fillCircle(centerx, centery, r/2, BLACK);
+    
+    this->last_value = this->value;
+  }
   
+
+
+  
+
   if (millis() - this->changed > 1000) {
-    this->tft->setCursor(centerx - radius, centery + radius+5);
-    this->tft->setTextColor(0xFFFF);
-    this->tft->print(this->label);
+    // borrar texto anterior
+    tft.fillRect(this->x, this->y + this->h+5, this->w, 22, BLACK);
+    printCenteredString(this->label, centerx, centery + r+5);
   } else {
-    this->tft->setCursor(centerx - radius, centery + radius+5);
-    this->tft->setTextColor(0xFFFF);
-    this->tft->print(this->value);
+    // borrar texto anterior
+    tft.fillRect(this->x, this->y + this->h+5, this->w, 22, BLACK);
+    printCenteredString(this->value, centerx, centery + r+5);
   }
 }
 
@@ -58,10 +92,15 @@ bool Knob::touched(float x, float y) {
 }
 void Knob::moved(String which, int direction) {
   this->value += (direction * 1.0);
-  this->tft->drawRect(this->x, this->y + this->h, 12, this->w, BLACK);
+  
+  if (this->value > this->maxVal) this->value = this->maxVal;
+  if (this->value < this->minVal) this->value = this->minVal;
+
   this->changed = millis();
   this->draw();
-  Serial.println(this->value);
 }
 
+void Knob::refresh() {
+  this->draw();
+}
 #endif
