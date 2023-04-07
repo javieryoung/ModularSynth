@@ -3,44 +3,54 @@
 
 
 #include "Arduino.h"
+#include "../Screen.h"
 #include "Input.h"
 
 
 extern Adafruit_ILI9341 tft;
 
-
-
-
 class Knob : public Input
 {
   public:
-    Knob(float x, float y, float w, float h, String label, float minVal, float maxVal);
+    Knob(Screen* screen, String id, float x, float y, float w, float h, String label, float minVal, float maxVal, float startingValue);
+    ~Knob();
+    String type();
     void draw();
     bool touched(float x, float y);
     void moved(String which, int direction);
+    void clicked(String which);
     void refresh();
     
   private:
     float x, y, w, h, minVal, maxVal;
+    String id;
     String label;
     int value;
     int last_value; // only to know when to refresh
     long changed;
+    Screen* screen;
 
 };
 
-Knob::Knob(float x, float y, float w, float h, String label, float minVal = 0, float maxVal = 15) {
+Knob::Knob(Screen* screen, String id, float x, float y, float w, float h, String label, float minVal = 0, float maxVal = 15, float startingValue = 0) {
+  this->screen = screen;
+  this->id = id;
   this->x = x;
   this->y = y;
   this->h = h;
   this->w = w;
   this->label = label;
-  this->value = 0;
+  this->value = startingValue;
   this->last_value = 1;
   this->changed = 0;
   this->minVal = minVal;
   this->maxVal = maxVal;
 }
+Knob::~Knob() {
+  
+}
+
+String Knob::type() { return "Knob"; }
 
 void Knob::draw() {
   float centerx = this->x + this->w/2;
@@ -96,11 +106,21 @@ void Knob::moved(String which, int direction) {
   if (this->value > this->maxVal) this->value = this->maxVal;
   if (this->value < this->minVal) this->value = this->minVal;
 
+  this->screen->event(this->id, this->value);
+
   this->changed = millis();
   this->draw();
+}
+
+
+void Knob::clicked(String which) {
+  
 }
 
 void Knob::refresh() {
   this->draw();
 }
+
+
+
 #endif

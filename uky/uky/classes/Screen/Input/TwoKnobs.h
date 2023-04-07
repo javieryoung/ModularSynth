@@ -2,18 +2,24 @@
 #define TwoKnobs_guard
 
 #include "Arduino.h"
+#include "../Screen.h"
 #include "Input.h"
 #include "Knob.h"
+
 
 extern Adafruit_ILI9341 tft;
 
 class TwoKnobs : public Input
 {
   public:
-    TwoKnobs(float x, float y, float w, float h, float margin, String t1, String t2);
+    TwoKnobs(Screen* screen, float x, float y, float w, float h, float margin);
+    ~TwoKnobs();
+    String type();
+    void setUpKnob(String which, String id, String label, float minValue, float maxValue, float startingValue);
     void draw();
     bool touched(float x, float y);
     void moved(String which, int direction);
+    void clicked(String which);
     void select(bool s);
     void refresh();
     
@@ -21,18 +27,34 @@ class TwoKnobs : public Input
     float x, y, w, h, m;
     Knob * knob1;
     Knob * knob2;
+    Screen* screen;
 
 };
 
-TwoKnobs::TwoKnobs(float x, float y, float w, float h, float margin, String t1, String t2) {
+TwoKnobs::TwoKnobs(Screen* screen, float x, float y, float w, float h, float margin) {
+  this->screen = screen;
   this->x = x;
   this->y = y;
   this->w = w; // width of each knob
   this->h = h; // height of each knob
   this->m = margin;
   this->selected = false;
-  knob1 = new Knob(x, y, w, h, t1);
-  knob2 = new Knob(x + w + margin, y, w, h, t2);
+}
+
+TwoKnobs::~TwoKnobs() {
+  delete knob1;
+  delete knob2;
+}
+
+String TwoKnobs::type() { return "TwoKnobs"; }
+
+void TwoKnobs::setUpKnob(String which, String id, String label, float minValue, float maxValue, float startingValue) {
+  if (which == "left") {
+    knob1 = new Knob(this->screen, id, this->x, this->y, this->w, this->h, label, minValue, maxValue, startingValue);
+  } else {
+    knob2 = new Knob(this->screen, id, this->x + this->w + this->m, this->y, this->w, this->h, label, minValue, maxValue, startingValue);
+  }
+
 }
 
 void TwoKnobs::draw() {
@@ -59,9 +81,26 @@ void TwoKnobs::moved(String which, int direction) {
     knob2->moved("", direction);
   }
 }
+
+
+void TwoKnobs::clicked(String which) {
+  if (this->selected) {
+    this->selected = false;
+    this->draw();
+  }
+  if (which == "left") {
+    knob1->clicked("left");
+  }
+  if (which == "right") {
+    knob2->clicked("right");
+  }
+}
+
+
 void TwoKnobs::refresh() {
   knob1->refresh();
   knob2->refresh();
 }
+
 
 #endif

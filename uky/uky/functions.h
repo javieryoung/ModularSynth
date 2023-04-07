@@ -9,3 +9,8 @@ void printCenteredString(const String &buf, int x, int y) {
     tft.setTextColor(PRIMARY);
     tft.print(buf);
 }
+
+
+void clear() {
+    tft.fillScreen(BLACK);
+}
