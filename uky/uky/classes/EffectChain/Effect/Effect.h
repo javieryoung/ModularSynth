@@ -9,9 +9,9 @@ class Effect : public Screenable
     Effect();
     virtual void edit();
     virtual String type();
+    virtual AudioStream * getAudioStream(String which);
     
   protected:
-    ;
 
 
 };
@@ -23,5 +23,8 @@ String Effect::type() {
   return "Effect?";
 }
 
+AudioStream * Effect::getAudioStream(String which) {
+  return NULL;
+}
 
 #endif

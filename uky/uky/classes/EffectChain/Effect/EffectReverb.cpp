@@ -10,6 +10,16 @@ EffectReverb::EffectReverb(EffectChain * effectChain) {
     this->damping = 0;
     this->lowPass = 0;
     this->highPass = 0;
+    
+    this->effectLeft = new AudioEffectFreeverb();
+    this->effectLeft->roomsize(0.5);
+    this->effectLeft->damping(0.5);
+
+    /*
+    this->effectRight = new AudioEffectFreeverb();
+    this->effectRight->roomsize(0.5);
+    this->effectRight->damping(0.5);
+    */
 }
 
 EffectReverb::~EffectReverb() {
@@ -59,6 +69,14 @@ void EffectReverb::event(String command, float param){
   }
   if (command == "roomSize") {
     this->roomSize = param;
+  }
+}
+
+AudioStream * EffectReverb::getAudioStream(String which) {
+  if (which == "left") {
+    return this->effectLeft;
+  } else {
+    return this->effectRight;
   }
 }
 

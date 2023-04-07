@@ -16,12 +16,27 @@ class EffectChain : public Screenable
     void addEffect(Effect *&e);
     void editEffect(int position);
     void event(String command, float param);
+    void setInputLeft(AudioStream *);
+    void setInputRight(AudioStream *);
+    void setOutputLeft(AudioStream *);
+    void setOutputRight(AudioStream *);
+    void connect();
+    void destroyConnections();
     
   protected:
     LinkedList<Effect*> effects;
+    LinkedList<AudioConnection*> connectionsLeft;
+    LinkedList<AudioConnection*> connectionsRight;
     Screen* screen = NULL;
     String showing;
     void destroyScreen();
+    AudioStream * inputLeft;
+    AudioStream * inputRight;
+    AudioStream * outputLeft;
+    AudioStream * outputRight;
+    AudioStream * effectLeft;
+    AudioStream * effectRight;
+    
 
 };
 

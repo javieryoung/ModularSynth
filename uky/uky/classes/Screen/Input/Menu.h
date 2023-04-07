@@ -41,7 +41,7 @@ void Menu::draw() {
   if(this->value != this->last_value) {
     for(int i = 0; i < this->options.size(); i++){
       float margin = 10;
-      tft.setCursor(margin*2, margin + i * 30 + 4);
+      tft.setCursor(margin*2, margin + i * 30 + TEXT_HEIGHT + 4);
       if (i == this->value) {
         tft.fillRoundRect(margin, margin + i * 30, SCREEN_WIDTH - margin*2, 25, 8, PRIMARY);
         tft.setTextColor(BLACK);

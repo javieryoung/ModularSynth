@@ -1,14 +1,38 @@
-
-
-
 #define PRIMARY 0xFFFF
 #define BLACK 0x0000
 #define SCREEN_WIDTH 320
+#define TEXT_HEIGHT 14
+
+#include <Adafruit_GFX.h>
+#include <Adafruit_ILI9341.h>
+#include <Fonts/FreeSans9pt7b.h>
 
 #include "SPI.h"
-#include "Adafruit_ILI9341.h"
 #include <XPT2046_Touchscreen.h>
 #include <Encoder.h>
+
+#include <Audio.h>
+#include <Wire.h>
+#include <SPI.h>
+#include <SD.h>
+#include <SerialFlash.h>
+
+// GUItool: begin automatically generated code
+AudioInputI2S            i2s2;           //xy=234,362
+AudioAmplifier           inputLeft;           //xy=405,318
+AudioAmplifier           inputRight;           //xy=409,369
+AudioAmplifier           outputLeft;           //xy=690,311
+AudioAmplifier           outputRight;           //xy=704,366
+AudioOutputI2S           i2s1;           //xy=907,341
+AudioConnection          patchCord1(i2s2, 0, inputLeft, 0);
+AudioConnection          patchCord2(i2s2, 1, inputRight, 0);
+AudioConnection          patchCord3(outputLeft, 0, i2s1, 0);
+AudioConnection          patchCord4(outputRight, 0, i2s1, 1);
+AudioControlSGTL5000     sgtl5000_1;     //xy=902,271
+// GUItool: end automatically generated code
+
+
+
 #define PI 3.1415926535897932384626433832795
 
 #include "functions.h"
@@ -71,6 +95,8 @@ Screen* currentScreen;
 void setup() {
   AudioMemory(32);
   
+  sgtl5000_1.enable();
+  sgtl5000_1.volume(1.0);
 
   pinMode(buttonPinLeft, INPUT_PULLUP);
   pinMode(buttonPinRight, INPUT_PULLUP);
@@ -79,30 +105,24 @@ void setup() {
   SPI.setSCK(14);
   tft.begin();
   tft.setRotation(3);
-
+  tft.fillScreen(BLACK);
+  tft.setTextSize(0.1);
+  tft.setFont(&FreeSans9pt7b);
 
   while(!ts.begin()) {
     Serial.print("No se inicio");
   }
   ts.setRotation(3);
 
-  tft.fillScreen(BLACK);
-  tft.setTextSize(2);
+  EffectChain * effectChain = new EffectChain();
+  effectChain->chainList();
+  effectChain->setInputLeft(&inputLeft);
+  effectChain->setInputRight(&inputRight);
+  effectChain->setOutputRight(&outputRight);
+  effectChain->setOutputLeft(&outputLeft);
+
+  effectChain->connect();
   
-  /*
-  currentScreen = new Screen();
-  Input* k = new TwoKnobs(20, 40, 50, 50, 15, "hola", "chau");
-  currentScreen->addInput(k);
-
-  
-  Input* k2 = new TwoKnobs(20, 160, 50, 50, 15, " hi ", " bye ");
-  currentScreen->addInput(k2);
-
-  currentScreen->draw();
-  */
-  EffectChain * effects = new EffectChain();
-  effects->chainList();
-
 }
 
 int positionLeft = 0;

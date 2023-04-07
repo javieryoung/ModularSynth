@@ -46,7 +46,60 @@ void EffectChain::effectList() {
 
 void EffectChain::addEffect(Effect *&e) {
     this->effects.add(e);
+    this->destroyConnections();
+    this->connect();
 }
+void EffectChain::setInputLeft(AudioStream *i) {
+    this->inputLeft = i;
+}
+void EffectChain::setInputRight(AudioStream *i) {
+    this->inputRight = i;
+}
+void EffectChain::setOutputLeft(AudioStream *o) {
+    this->outputLeft = o;
+}
+void EffectChain::setOutputRight(AudioStream *o) {
+    this->outputRight = o;
+}
+
+void EffectChain::destroyConnections() {
+    for(int i = 0; i < this->connectionsRight.size(); i++){
+        delete this->connectionsRight.get(i);
+    }
+    this->connectionsRight.clear();
+    for(int i = 0; i < this->connectionsLeft.size(); i++){
+        delete this->connectionsLeft.get(i);
+    }
+    this->connectionsLeft.clear();
+}
+
+void EffectChain::connect() {
+    if ( false && this->effects.size() > 0){
+        // the first one splits channel 0(right) and channel 1(left);
+        AudioStream * currentAudioStreamRight = this->inputRight;
+        AudioStream * currentAudioStreamLeft = this->inputLeft;
+
+        for(int i = 0; i < this->effects.size(); i++){
+            AudioStream * nextAudioStreamRight = this->effects.get(i)->getAudioStream("right");
+            AudioStream * nextAudioStreamLeft = this->effects.get(i)->getAudioStream("left");
+
+            this->connectionsRight.add((new AudioConnection(*currentAudioStreamRight, 0, *nextAudioStreamRight, 0))); // right
+            this->connectionsLeft.add((new AudioConnection(*currentAudioStreamLeft, 0, *nextAudioStreamLeft, 0))); // left
+
+            currentAudioStreamRight = nextAudioStreamRight;
+            currentAudioStreamLeft = nextAudioStreamLeft;
+        }
+
+
+        this->connectionsRight.add((new AudioConnection(*currentAudioStreamRight, 0, *this->outputRight, 0))); // right
+        this->connectionsLeft.add((new AudioConnection(*currentAudioStreamLeft, 0, *this->outputLeft, 0))); // left
+    } else {
+        this->connectionsRight.add((new AudioConnection(*this->inputRight, 0, *this->outputRight, 0))); // right
+        this->connectionsLeft.add((new AudioConnection(*this->inputLeft, 0, *this->outputLeft, 0))); // left
+    }
+    
+}
+
 
 
 void EffectChain::editEffect(int position) {

@@ -86,11 +86,11 @@ void Knob::draw() {
   if (millis() - this->changed > 1000) {
     // borrar texto anterior
     tft.fillRect(this->x, this->y + this->h+5, this->w, 22, BLACK);
-    printCenteredString(this->label, centerx, centery + r+5);
+    printCenteredString(this->label, centerx, centery + r+5 + TEXT_HEIGHT);
   } else {
     // borrar texto anterior
     tft.fillRect(this->x, this->y + this->h+5, this->w, 22, BLACK);
-    printCenteredString(this->value, centerx, centery + r+5);
+    printCenteredString(this->value, centerx, centery + r+5 + TEXT_HEIGHT);
   }
 }
 
