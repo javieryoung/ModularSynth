@@ -12,14 +12,15 @@ EffectReverb::EffectReverb(EffectChain * effectChain) {
     this->highPass = 0;
     
     this->effectLeft = new AudioEffectFreeverb();
-    this->effectLeft->roomsize(0.5);
-    this->effectLeft->damping(0.5);
+    this->effectLeft->roomsize(0);
+    this->effectLeft->damping(0);
 
-    /*
+    delay(10);
+
     this->effectRight = new AudioEffectFreeverb();
     this->effectRight->roomsize(0.5);
     this->effectRight->damping(0.5);
-    */
+    
 }
 
 EffectReverb::~EffectReverb() {
@@ -60,15 +61,18 @@ void EffectReverb::event(String command, float param){
   }
   if (command == "highPass") {
     this->highPass = param;
+    
   }
   if (command == "lowPass") {
     this->lowPass = param;
   }
   if (command == "damping") {
     this->damping = param;
+    this->effectLeft->damping(param/100.0);
   }
   if (command == "roomSize") {
     this->roomSize = param;
+    this->effectLeft->roomsize(param/100.0);
   }
 }
 

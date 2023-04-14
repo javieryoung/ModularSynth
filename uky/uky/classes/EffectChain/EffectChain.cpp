@@ -64,17 +64,19 @@ void EffectChain::setOutputRight(AudioStream *o) {
 
 void EffectChain::destroyConnections() {
     for(int i = 0; i < this->connectionsRight.size(); i++){
+        this->connectionsRight.get(i)->disconnect();
         delete this->connectionsRight.get(i);
     }
     this->connectionsRight.clear();
     for(int i = 0; i < this->connectionsLeft.size(); i++){
+        this->connectionsLeft.get(i)->disconnect();
         delete this->connectionsLeft.get(i);
     }
     this->connectionsLeft.clear();
 }
 
 void EffectChain::connect() {
-    if ( false && this->effects.size() > 0){
+    if (this->effects.size() > 0){
         // the first one splits channel 0(right) and channel 1(left);
         AudioStream * currentAudioStreamRight = this->inputRight;
         AudioStream * currentAudioStreamLeft = this->inputLeft;
@@ -83,19 +85,35 @@ void EffectChain::connect() {
             AudioStream * nextAudioStreamRight = this->effects.get(i)->getAudioStream("right");
             AudioStream * nextAudioStreamLeft = this->effects.get(i)->getAudioStream("left");
 
-            this->connectionsRight.add((new AudioConnection(*currentAudioStreamRight, 0, *nextAudioStreamRight, 0))); // right
-            this->connectionsLeft.add((new AudioConnection(*currentAudioStreamLeft, 0, *nextAudioStreamLeft, 0))); // left
 
+            AudioConnection * r = new AudioConnection(*currentAudioStreamRight, *nextAudioStreamRight);
+            r->connect();
+            this->connectionsRight.add(r); // right
+
+            AudioConnection * l = new AudioConnection(*currentAudioStreamLeft, *nextAudioStreamLeft);
+            l->connect();
+            this->connectionsLeft.add(l); // left
+            
             currentAudioStreamRight = nextAudioStreamRight;
             currentAudioStreamLeft = nextAudioStreamLeft;
         }
 
+        AudioConnection * rFinal = new AudioConnection(*currentAudioStreamRight, *this->outputRight);
+        rFinal->connect();
+        this->connectionsRight.add(rFinal); // right
 
-        this->connectionsRight.add((new AudioConnection(*currentAudioStreamRight, 0, *this->outputRight, 0))); // right
-        this->connectionsLeft.add((new AudioConnection(*currentAudioStreamLeft, 0, *this->outputLeft, 0))); // left
+        AudioConnection * lFinal = new AudioConnection(*currentAudioStreamLeft, *this->outputLeft);
+        lFinal->connect();
+        this->connectionsLeft.add(lFinal); // left
     } else {
-        this->connectionsRight.add((new AudioConnection(*this->inputRight, 0, *this->outputRight, 0))); // right
-        this->connectionsLeft.add((new AudioConnection(*this->inputLeft, 0, *this->outputLeft, 0))); // left
+        
+        AudioConnection * rFinal = new AudioConnection(*this->inputRight, *this->outputRight);
+        rFinal->connect();
+        this->connectionsRight.add(rFinal); // right
+
+        AudioConnection * lFinal = new AudioConnection(*this->inputLeft, *this->outputLeft);
+        lFinal->connect();
+        this->connectionsLeft.add(lFinal); // left
     }
     
 }

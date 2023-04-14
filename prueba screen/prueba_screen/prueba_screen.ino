@@ -1,27 +1,29 @@
 
 
 #include "SPI.h"
-#include "ILI9341_t3.h"
+#include "ILI9341_t3n.h"
 #include <XPT2046_Touchscreen.h>
 #include <Encoder.h>
 
-#define TFT_DC      20
-#define TFT_CS      21
-#define TFT_RST    255 
-#define TFT_MOSI     7
-#define TFT_SCLK    14
-#define TFT_MISO    12
-ILI9341_t3 tft = ILI9341_t3(TFT_CS, TFT_DC, TFT_RST, TFT_MOSI, TFT_SCLK, TFT_MISO);
 
-#define CS_PIN  8
-XPT2046_Touchscreen ts(CS_PIN); 
 
-Encoder encoderLeft(1, 3);
-Encoder encoderRight(4, 5);
 
-long positionLeft  = -999;
-long positionRight = -999;
-long _lastUpdate = 0;
+// when used w/ Audio Adapter, must use an alternate CS pin for the display
+const int TFT_CHIP_SELECT = 14;
+const int TFT_DATA_COMMAND = 9;
+ILI9341_t3n tft = ILI9341_t3n(TFT_CHIP_SELECT, TFT_DATA_COMMAND);
+
+// create TFT framebuffer
+DMAMEM uint16_t framebuf[320 * 240];
+
+// when used w/ Audio Adapter, must use an alternate CS pin for the touchscreen
+#define TS_CS_PIN  5
+
+XPT2046_Touchscreen ts(TS_CS_PIN, 255);
+
+
+
+
 
 void setup() {
   
@@ -57,31 +59,5 @@ void loop(void) {
     Serial.print("\tPressure = "); Serial.println(p.z);  
   }
 
-
-  long nowInMillis = millis();
-  if (nowInMillis - _lastUpdate > 200) {
-    _lastUpdate = millis();
-    long newLeft, newRight;
-    newLeft = encoderLeft.read();
-    if (newLeft != positionLeft) {
-      if(newLeft < positionLeft) {
-        tft.println("Left >");
-      } else {
-        tft.println("Left <");
-      }
-      positionLeft = newLeft;
-    }
-
-    
-    newRight = encoderRight.read();
-    if (newRight != positionRight) {
-      if(newRight < positionRight) {
-        tft.println("Right >");
-      } else {
-        tft.println("Right <");
-      }
-      positionRight = newRight;
-    }
-  }
   
 }

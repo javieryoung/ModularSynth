@@ -14,3 +14,6 @@ void printCenteredString(const String &buf, int x, int y) {
 void clear() {
     tft.fillScreen(BLACK);
 }
+
+
+
