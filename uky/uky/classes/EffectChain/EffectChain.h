@@ -11,8 +11,8 @@ class EffectChain : public Screenable
 {
   public:
     EffectChain();
-    void chainList();
-    void effectList();
+    void chainListScreen();
+    void effectListScreen();
     void addEffect(Effect *&e);
     void editEffect(int position);
     void event(String command, float param);

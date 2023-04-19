@@ -36,6 +36,9 @@ void Input::select(bool s) {
   this->selected = s;
   this->draw();
 }
+void Input::moved(String which, int direction) {
+  
+}
 
 
 #endif

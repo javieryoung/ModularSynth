@@ -57,7 +57,7 @@ void EffectReverb::event(String command, float param){
   Serial.println(param);
   if (command == "clicked" && param == 0) { // click sobre izquierdo
       this->destroyScreen(); // solo quiero borrar la screen, el efecto me interesa quedarmelo
-      this->effectChain->chainList();
+      this->effectChain->chainListScreen();
   }
   if (command == "highPass") {
     this->highPass = param;

@@ -4,13 +4,16 @@
 #include "Arduino.h"
 
 
-class Modular
+class Modular : public Screenable
 {
   public:
     Modular(AudioStream * output);
     ~Modular();
     int getAvailableVoice();
     void playNote(float freq);
+    void connect();
+    void menuScreen();
+    void event(String command, float param);
     
     
   private:
@@ -21,15 +24,21 @@ class Modular
     AudioSynthWaveformModulated * waves[8];
     AudioConnection * patches[19];
     AudioStream * output;
+    Screen * screen;
 
 
 };
 
 Modular::Modular(AudioStream * output) {
     this->output = output;
+
+}
+
+void Modular::connect() {
     this->mixer1 = new AudioMixer4();
     this->mixer2 = new AudioMixer4();
     this->mixerFinal = new AudioMixer4();
+
     // envelopes
     for (int i = 0; i < 8; i++) {
         this->envelopes[i] = new AudioEffectEnvelope();
@@ -79,16 +88,15 @@ Modular::Modular(AudioStream * output) {
     this->mixer2->gain(2,0.25);
     this->mixer2->gain(3,0.25);
 
-    this->mixerFinal->gain(0,0.5);
-    this->mixerFinal->gain(1,0.5);
+    this->mixerFinal->gain(0,0.50);
+    this->mixerFinal->gain(1,0.50);
     this->mixerFinal->gain(2,0);
     this->mixerFinal->gain(3,0);
-
 }
 
 
 Modular::~Modular() {
-
+    // TODO
 }
 
 int Modular::getAvailableVoice() {
@@ -102,13 +110,20 @@ int Modular::getAvailableVoice() {
 void Modular::playNote(float freq) {
     int voice = this->getAvailableVoice();
     if (voice != -1) {
-        Serial.print("Playing wave ");
-        Serial.println(voice);
         this->waves[voice]->frequency(freq);
         this->envelopes[voice]->noteOn();
         delay(50);
         this->envelopes[voice]->noteOff();
     }
 }
+
+void Modular::menuScreen() {
+}
+
+
+void Modular::event(String command, float param){
+    Serial.println(command);
+}
+
 
 #endif

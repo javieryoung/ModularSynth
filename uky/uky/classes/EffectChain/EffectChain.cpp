@@ -12,7 +12,7 @@ void EffectChain::destroyScreen() {
     clear();
 }
 
-void EffectChain::chainList() {
+void EffectChain::chainListScreen() {
     destroyScreen();
     this->screen = new Screen(this);
     Input* m = new Menu(this->screen);
@@ -30,7 +30,7 @@ void EffectChain::chainList() {
 }
 
 
-void EffectChain::effectList() {
+void EffectChain::effectListScreen() {
     destroyScreen();
     this->screen = new Screen(this);
     Input* m = new Menu(this->screen);
@@ -131,7 +131,7 @@ void EffectChain::event(String command, float param){
     if (this->showing == "chainList") {
         if (command == "selected") {
             if (param == this->effects.size()) {
-                this->effectList();
+                this->effectListScreen();
             } else {
                 this->editEffect(param);
             }

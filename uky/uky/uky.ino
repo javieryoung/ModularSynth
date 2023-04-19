@@ -45,6 +45,7 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=902,271
 #include "classes/Screen/Input/Knob.h"
 #include "classes/Screen/Input/Menu.h"
 #include "classes/Screen/Input/TwoKnobs.h"
+#include "classes/Screen/Input/Button.h"
 
 #include "classes/EffectChain/EffectChain.h"
 #include "classes/EffectChain/Effect/EffectReverb.h"
@@ -53,6 +54,7 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=902,271
 #include "classes/EffectChain/Effect/EffectReverb.cpp"
 
 #include "classes/Modular/Modular.h"
+#include "classes/SoloMaker/SoloMaker.h"
 
 
 #include "waves/Sine.h"
@@ -105,11 +107,11 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 
 
 double _lastUpdate = 0;
-// Screen* currentScreen;
+Screen* currentScreen;
 
-float notes[142] = { 16.35, 17.32, 17.32, 18.35, 19.45, 19.45, 20.60, 21.83, 23.12, 23.12, 24.50, 25.96, 25.96, 27.50, 29.14, 29.14, 30.87, 32.70, 34.65, 34.65, 36.71, 38.89, 38.89, 41.20, 43.65, 46.25, 46.25, 49.00, 51.91, 51.91, 55.00, 58.27, 58.27, 61.74, 65.41, 69.30, 69.30, 73.42, 77.78, 77.78, 82.41, 87.31, 92.50, 92.50, 98.00,103.83,103.83,110.00,116.54,116.54,123.47,130.81,138.59,138.59,146.83,155.56,155.56,164.81,174.61,185.00,185.00,196.00,207.65,207.65,220.00,233.08,233.08,246.94,261.63,277.18,277.18,293.66,311.13,311.13,329.63,349.23,369.99,369.99,392.00,415.30,415.30,440.00,466.16,466.16,493.88,523.25,554.37,554.37,587.33,622.25,622.25,659.26,698.46,739.99,739.99,783.99,830.61,830.61,880.00,932.33,932.33,987.77,046.50,108.73,108.73,174.66,244.51,244.51,318.51,396.91,479.98,479.98,567.98,661.22,661.22,760.00,864.66,864.66,975.53,093.00,217.46,217.46,349.32,489.02,489.02,637.02,793.83,959.96,959.96,135.96,322.44,322.44,520.00,729.31,729.31,951.07,186.01,434.92,434.92,698.64,978.03,978.03 };
-int currentNote = 70;
-Modular * m;
+float notes[128] = {32.703, 34.648, 36.708, 38.891, 41.203, 43.654, 46.249, 48.999, 51.913, 55, 58.27, 61.735, 65.406, 69.296, 73.416, 77.782, 82.407, 87.307, 92.499, 97.999, 103.826, 110, 116.541, 123.471, 130.813, 138.591, 146.832, 155.563, 164.814, 174.614, 184.997, 195.998, 207.652, 220, 233.082, 246.942, 261.626, 277.183, 293.665, 311.127, 329.628, 349.228, 369.994, 391.995, 415.305, 440, 466.164, 493.883, 523.251, 554.365, 587.33, 622.254, 659.255, 698.456, 739.989, 783.991, 830.609, 880, 932.328, 987.767, 1046.502, 1108.731, 1174.659, 1244.508, 1318.51, 1396.913, 1479.978, 1567.982, 1661.219, 1760, 1864.655, 1975.533, 2093.005, 2217.461, 2349.318, 2489.016, 2637.02, 2793.826, 2959.955, 3135.963, 3322.438, 3520, 3729.31, 3951.066, 4186.009, 4434.922, 4698.636, 4978.032, 5274.041, 5587.652, 5919.911, 6271.927, 6644.875, 7040, 7458.62, 7902.133, 8372.018, 8869.844, 9397.273, 9956.063, 10548.08, 11175.3, 11839.82, 12543.85};
+int currentNote = 0;
+SoloMaker * sm;
 
 void setup() {
   AudioMemory(64);
@@ -134,8 +136,9 @@ void setup() {
   ts.setRotation(3);
   outputLeft.gain(1);
   outputRight.gain(1);
-  m = new Modular(&outputRight);
-
+  sm = new SoloMaker(&outputLeft);
+  sm->mainScreen();
+  playNote(currentNote);
 }
 
 
@@ -146,12 +149,12 @@ void loop(void) {
   
   if (buttonLeft.update()) {
     if (buttonLeft.fallingEdge()) {
-      // currentScreen->clicked("left");
+      currentScreen->clicked("left");
     }
   } 
   if (buttonRight.update()) {
     if (buttonRight.fallingEdge()) {
-      // currentScreen->clicked("right");
+      currentScreen->clicked("right");
     }
   } 
   
@@ -174,7 +177,7 @@ void loop(void) {
     Serial.print("\tY = "); Serial.println(py);
     
     
-    // currentScreen->touched(px, py, p.z);
+    currentScreen->touched(px, py, p.z);
   }
   long nowInMillis = millis();
   if (nowInMillis - _lastUpdate > 100) {
@@ -183,30 +186,93 @@ void loop(void) {
     newLeft = encoderLeft.read();
     if (newLeft != positionLeft) {
       if(newLeft < positionLeft) {
-        // currentScreen->moved("left", 1.0);
-        if (currentNote < 141) 
-          currentNote = currentNote+1;
+        currentScreen->moved("left", 1.0);
+        playNote(1);
       } else {
-        // currentScreen->moved("left", -1.0);
-        if (currentNote != 0) 
-          currentNote = currentNote-1;
+        playNote(-1);
       }
-      Serial.print("playing note number ");
-      Serial.println(currentNote);
-      m->playNote(notes[currentNote]);
       // m->playNote(440);
       positionLeft = newLeft;
     }
     newRight = encoderRight.read();
     if (newRight != positionRight) {
       if(newRight < positionRight) {
-        // currentScreen->moved("right", 1.0);
+        currentScreen->moved("right", 1.0);
       } else {
-        // currentScreen->moved("right", -1.0);
+        currentScreen->moved("right", -1.0);
       }
       positionRight = newRight;
     }
   }
-  // currentScreen->refresh();
+  currentScreen->refresh();
 }
 
+
+int scales [10][12] = {
+  {12, 0}, // octaves
+  {7, 5, 0 },  // octaves & fifths
+  {4, 3, 5, 0},  // major triads
+  {3, 4, 5, 0},  // minor triads
+  {3, 2, 2, 5, 0},  // minor triads+
+  {3, 2, 5, 2, 0},  // blues 1
+  {7, 0},  // 5th cycle
+  {3, 2, 2, 0},  // blues 2
+  {3, 2, 2, 3, 2, 0},  // pentatonic
+  {3, 2, 1, 1, 3, 2, 0},  // pentatonic blues
+};
+
+int indexInScale = 0;
+int selectedScale = 9;
+int lastDirection;
+void playNote(int direction) {
+  if (lastDirection == direction)
+    indexInScale += direction;
+
+  lastDirection = direction;
+  if (indexInScale == -1) {
+    for (indexInScale = 1; scales[selectedScale][indexInScale] != 0; indexInScale++);
+    indexInScale--;
+  }
+  if (scales[selectedScale][indexInScale] == 0) {
+    indexInScale = 0;
+  }
+  currentNote = currentNote + (scales[selectedScale][indexInScale] * direction);
+
+  Serial.print("Jump ");
+  Serial.println((scales[selectedScale][indexInScale] * direction));
+  Serial.print("Note ");
+  Serial.print(currentNote);
+  Serial.print(" que es  ");
+  Serial.println(noteName(currentNote));
+  sm->modular->playNote(notes[currentNote]);
+
+  
+}
+
+String noteName(int index) {
+  if (index % 12 == 0)
+    return "C";
+  if (index % 12 == 1)
+    return "C#";
+  if (index % 12 == 2)
+    return "D";
+  if (index % 12 == 3)
+    return "D#";
+  if (index % 12 == 4)
+    return "E";
+  if (index % 12 == 5)
+    return "F";
+  if (index % 12 == 6)
+    return "F#";
+  if (index % 12 == 7)
+    return "G";
+  if (index % 12 == 8)
+    return "G#";
+  if (index % 12 == 9)
+    return "A";
+  if (index % 12 == 10)
+    return "A#";
+  if (index % 12 == 11)
+    return "B";
+  return "Unknown note";
+}
