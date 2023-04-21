@@ -1,8 +1,9 @@
 #ifndef EffectChain_cpp_guard
 #define EffectChain_cpp_guard
 
-EffectChain::EffectChain() {
+EffectChain::EffectChain(bool stereo) {
     this->screen = NULL;
+    this->stereo = stereo;
 }
 
 void EffectChain::destroyScreen() {
@@ -78,38 +79,47 @@ void EffectChain::destroyConnections() {
 void EffectChain::connect() {
     if (this->effects.size() > 0){
         // the first one splits channel 0(right) and channel 1(left);
+        
         AudioStream * currentAudioStreamRight = this->inputRight;
         AudioStream * currentAudioStreamLeft = this->inputLeft;
 
         for(int i = 0; i < this->effects.size(); i++){
-            AudioStream * nextAudioStreamRight = this->effects.get(i)->getAudioStream("right");
+            this->effects.get(i)->setInputLeft(currentAudioStreamLeft);
+            if(this->stereo) this->effects.get(i)->setInputRight(currentAudioStreamRight);
+
+            if(this->stereo) AudioStream * nextAudioStreamRight = this->effects.get(i)->getAudioStream("right");
             AudioStream * nextAudioStreamLeft = this->effects.get(i)->getAudioStream("left");
+            
 
-
-            AudioConnection * r = new AudioConnection(*currentAudioStreamRight, *nextAudioStreamRight);
-            r->connect();
-            this->connectionsRight.add(r); // right
+            if(this->stereo) {
+                AudioConnection * r = new AudioConnection(*currentAudioStreamRight, *nextAudioStreamRight);
+                r->connect();
+                this->connectionsRight.add(r); // right
+            }
 
             AudioConnection * l = new AudioConnection(*currentAudioStreamLeft, *nextAudioStreamLeft);
             l->connect();
             this->connectionsLeft.add(l); // left
             
-            currentAudioStreamRight = nextAudioStreamRight;
+            if(this->stereo) currentAudioStreamRight = nextAudioStreamRight;
             currentAudioStreamLeft = nextAudioStreamLeft;
         }
-
-        AudioConnection * rFinal = new AudioConnection(*currentAudioStreamRight, *this->outputRight);
-        rFinal->connect();
-        this->connectionsRight.add(rFinal); // right
+        
+        if(this->stereo) {
+            AudioConnection * rFinal = new AudioConnection(*currentAudioStreamRight, *this->outputRight);
+            rFinal->connect();
+            this->connectionsRight.add(rFinal); // right
+        }
 
         AudioConnection * lFinal = new AudioConnection(*currentAudioStreamLeft, *this->outputLeft);
         lFinal->connect();
         this->connectionsLeft.add(lFinal); // left
     } else {
-        
-        AudioConnection * rFinal = new AudioConnection(*this->inputRight, *this->outputRight);
-        rFinal->connect();
-        this->connectionsRight.add(rFinal); // right
+        if(this->stereo) {
+            AudioConnection * rFinal = new AudioConnection(*this->inputRight, *this->outputRight);
+            rFinal->connect();
+            this->connectionsRight.add(rFinal); // right
+        }
 
         AudioConnection * lFinal = new AudioConnection(*this->inputLeft, *this->outputLeft);
         lFinal->connect();
@@ -141,7 +151,7 @@ void EffectChain::event(String command, float param){
             if (command == "selected") {
                 if (param == 0) {
                     // REVERB
-                    Effect * e = new EffectReverb(this);
+                    Effect * e = new EffectReverb(this, this->stereo);
                     this->addEffect(e);
                     this->editEffect(this->effects.size()-1);
                 }

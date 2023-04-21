@@ -10,7 +10,7 @@ const String availableEffects[] = {"Reverb", "Delay"};
 class EffectChain : public Screenable
 {
   public:
-    EffectChain();
+    EffectChain(bool stereo);
     void chainListScreen();
     void effectListScreen();
     void addEffect(Effect *&e);
@@ -36,8 +36,8 @@ class EffectChain : public Screenable
     AudioStream * outputRight;
     AudioStream * effectLeft;
     AudioStream * effectRight;
-    
 
+    bool stereo;
 };
 
 

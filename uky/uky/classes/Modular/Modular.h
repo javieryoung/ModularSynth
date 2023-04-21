@@ -148,14 +148,12 @@ void Modular::event(String command, float param){
 
 
 void Modular::mainScreen(){
-    Serial.println("A");
     this->screen = new Screen(this);
     Input* attackDecayKnobs = new TwoKnobs(this->screen, 50, 150, 40, 40, 10);
     attackDecayKnobs->setUpKnob("left", "attack", "A", 0, 3, 0);
     attackDecayKnobs->setUpKnob("right", "decay", "D", 0, 3, 0);
     this->screen->addInput(attackDecayKnobs);   
 
-    Serial.println("B");
     Input* sustainReleaseKnobs = new TwoKnobs(this->screen, 50+100+10, 150, 40, 40, 10);
     sustainReleaseKnobs->setUpKnob("left", "sustain", "S", 0, 1, 0);
     sustainReleaseKnobs->setUpKnob("right", "release", "R", 0, 3, 0);

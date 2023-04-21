@@ -11,8 +11,19 @@ class Effect : public Screenable
     virtual String type();
     virtual AudioStream * getAudioStream(String which);
     
+    void setInputLeft(AudioStream * inputLeft);
+    void setInputRight(AudioStream * inputRight);
+    bool stereo;
+    float wet; // 0: dry, 1: wet
+    
   protected:
-
+    Screen* screen = NULL;
+    EffectChain* effectChain;
+    AudioStream * inputLeft;
+    AudioStream * inputRight;
+    AudioMixer * dryWetLeft;
+    AudioMixer * dryWetRight;
+    LinkedList<AudioConnection*> connections;
 
 };
 
@@ -23,8 +34,22 @@ String Effect::type() {
   return "Effect?";
 }
 
+void Effect::setInputLeft(AudioStream * inputLeft) {
+  this->inputLeft = inputLeft;
+}
+
+void Effect::setInputRight(AudioStream * inputRight) {
+  this->inputRight = inputRight;
+}
+
+
+
 AudioStream * Effect::getAudioStream(String which) {
-  return NULL;
+  if (which == "left") {
+    return this->dryWetLeft;
+  } else {
+    return this->dryWetRight;
+  }
 }
 
 #endif
