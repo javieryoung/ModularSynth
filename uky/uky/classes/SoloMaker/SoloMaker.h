@@ -12,17 +12,25 @@ class SoloMaker : public Screenable
     AudioStream * output;
     Screen * screen;
     Modular * modular;
+    EffectChain * effectChain
     void destroyScreen();
 };
 
 SoloMaker::SoloMaker(AudioStream * output) {
-
-    this->modular = new Modular(&outputLeft);
+    this->modular = new Modular();
     this->modular->connect();
+
+    this->effectChain = new EffectChain(false);
+    this->effectChain->setInputLeft(this->modular->output);
+    this->effectChain->setOutputLeft(&output);
+    this->effectChain->connect();
+
 }
 
 SoloMaker::~SoloMaker() {
     // TODO
+    delete this->modular;
+    delete this->effectChain;
     this->destroyScreen();
 }
 
@@ -33,14 +41,16 @@ void SoloMaker::destroyScreen() {
 
 void SoloMaker::mainScreen() {
     this->screen = new Screen(this);
-    Input* synthButton = new Button(this->screen, "synthButton", 10, 10, 80, 50, "Synth");
+    
+    Input* scaleButton = new Button(this->screen, "scaleButton", 10, 10, 80, 50, "Scale");
+    this->screen->addInput(scaleButton);
+
+    Input* synthButton = new Button(this->screen, "synthButton", 110, 10, 80, 50, "Synth");
     this->screen->addInput(synthButton);
 
-    Input* effectsButton = new Button(this->screen, "effectsButton", 110, 10, 80, 50, "Effects");
+    Input* effectsButton = new Button(this->screen, "effectsButton", 220, 10, 80, 50 "Effects");
     this->screen->addInput(effectsButton);
 
-    Input* scaleButton = new Button(this->screen, "scaleButton", 220, 10, 80, 50, "Scale");
-    this->screen->addInput(scaleButton);
     
 
     this->screen->draw();
@@ -54,6 +64,11 @@ void SoloMaker::event(String command, float param){
         this->destroyScreen();
         this->modular->mainScreen();
     }
+    if (command == "effectsButton") {
+        this->destroyScreen();
+        this->effectChain->effectListScreen();
+    }
+    
 }
 
 #endif
