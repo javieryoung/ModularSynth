@@ -12,6 +12,7 @@ class SoloMaker : public Screenable
     AudioStream * output;
     Screen * screen;
     Modular * modular;
+    void destroyScreen();
 };
 
 SoloMaker::SoloMaker(AudioStream * output) {
@@ -22,6 +23,12 @@ SoloMaker::SoloMaker(AudioStream * output) {
 
 SoloMaker::~SoloMaker() {
     // TODO
+    this->destroyScreen();
+}
+
+void SoloMaker::destroyScreen() {
+    delete this->screen;
+    clear();
 }
 
 void SoloMaker::mainScreen() {
@@ -43,6 +50,10 @@ void SoloMaker::mainScreen() {
 
 void SoloMaker::event(String command, float param){
     Serial.println(command);
+    if (command == "synthButton") {
+        this->destroyScreen();
+        this->modular->mainScreen();
+    }
 }
 
 #endif

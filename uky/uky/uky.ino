@@ -172,10 +172,10 @@ void loop(void) {
 
     float px = (1 - (p.x-bottomRightX) / (topLeftX-bottomRightX)) * 320;
     float py = (1 - (p.y-bottomRightY) / (topLeftY-bottomRightY)) * 240;
-    
+    /*
     Serial.print("X = "); Serial.print(px);
     Serial.print("\tY = "); Serial.println(py);
-    
+    */
     
     currentScreen->touched(px, py, p.z);
   }
@@ -189,6 +189,7 @@ void loop(void) {
         currentScreen->moved("left", 1.0);
         playNote(1);
       } else {
+        currentScreen->moved("left", -1.0);
         playNote(-1);
       }
       // m->playNote(440);
@@ -238,10 +239,6 @@ void playNote(int direction) {
   }
   currentNote = currentNote + (scales[selectedScale][indexInScale] * direction);
 
-  Serial.print("Jump ");
-  Serial.println((scales[selectedScale][indexInScale] * direction));
-  Serial.print("Note ");
-  Serial.print(currentNote);
   Serial.print(" que es  ");
   Serial.println(noteName(currentNote));
   sm->modular->playNote(notes[currentNote]);

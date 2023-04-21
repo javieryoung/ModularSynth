@@ -14,6 +14,7 @@ class Modular : public Screenable
     void connect();
     void menuScreen();
     void event(String command, float param);
+    void mainScreen();
     
     
   private:
@@ -123,7 +124,46 @@ void Modular::menuScreen() {
 
 void Modular::event(String command, float param){
     Serial.println(command);
+    if(command == "attack") {
+        for (int i = 0; i < 8; i++) {
+            this->envelopes[i]->attack(param*1000);
+        }
+    }
+    if(command == "decay") {
+        for (int i = 0; i < 8; i++) {
+            this->envelopes[i]->decay(param*1000);
+        }
+    }
+    if(command == "sustain") {
+        for (int i = 0; i < 8; i++) {
+            this->envelopes[i]->sustain(param);
+        }
+    }
+    if(command == "release") {
+        for (int i = 0; i < 8; i++) {
+            this->envelopes[i]->release(param*1000);
+        }
+    }
 }
 
+
+void Modular::mainScreen(){
+    Serial.println("A");
+    this->screen = new Screen(this);
+    Input* attackDecayKnobs = new TwoKnobs(this->screen, 50, 150, 40, 40, 10);
+    attackDecayKnobs->setUpKnob("left", "attack", "A", 0, 3, 0);
+    attackDecayKnobs->setUpKnob("right", "decay", "D", 0, 3, 0);
+    this->screen->addInput(attackDecayKnobs);   
+
+    Serial.println("B");
+    Input* sustainReleaseKnobs = new TwoKnobs(this->screen, 50+100+10, 150, 40, 40, 10);
+    sustainReleaseKnobs->setUpKnob("left", "sustain", "S", 0, 1, 0);
+    sustainReleaseKnobs->setUpKnob("right", "release", "R", 0, 3, 0);
+    this->screen->addInput(sustainReleaseKnobs);   
+
+    this->screen->draw();
+    // this->showing = "chainList";
+    currentScreen = this->screen;
+}
 
 #endif

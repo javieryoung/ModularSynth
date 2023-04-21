@@ -25,8 +25,8 @@ class Knob : public Input
     float x, y, w, h, minVal, maxVal;
     String id;
     String label;
-    int value;
-    int last_value; // only to know when to refresh
+    float value;
+    float last_value; // only to know when to refresh
     long changed;
     Screen* screen;
 
@@ -101,7 +101,7 @@ bool Knob::touched(float x, float y) {
   );
 }
 void Knob::moved(String which, int direction) {
-  this->value += (direction * 1.0);
+  this->value += (direction * 1.0) * (this->maxVal - this->minVal)/20;
   
   if (this->value > this->maxVal) this->value = this->maxVal;
   if (this->value < this->minVal) this->value = this->minVal;
