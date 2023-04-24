@@ -10,14 +10,16 @@ extern Screen* currentScreen;
 class EffectReverb : public Effect
 {
   public:
-    EffectReverb(EffectChain * effectChain);
+    EffectReverb(EffectChain * effectChain, bool stereo);
     ~EffectReverb();
     String type();
     void destroyScreen();
     void edit();
     void event(String command, float param);
-    void setDamping(float value);
-    void setRoomSize(float value);
+    void setDamping();
+    void setRoomSize();
+    void setWet();
+    EffectChain* effectChain;
     
   protected:
     float roomSize, damping, lowPass, highPass;

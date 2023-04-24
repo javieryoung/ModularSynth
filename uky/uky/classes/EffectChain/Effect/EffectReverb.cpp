@@ -16,15 +16,15 @@ EffectReverb::EffectReverb(EffectChain * effectChain, bool stereo) {
 
     this->effectLeft = new AudioEffectFreeverb();
 
-    this->dryWetLeft = new AudioMixer();
+    this->dryWetLeft = new AudioMixer4();
     this->dryWetLeft->gain(2, 0);
     this->dryWetLeft->gain(3, 0);
 
-    AudioConnection leftDry = new AudioConnection(*this->inputLeft, 0, *this->dryWetLeft, 0);
+    AudioConnection * leftDry = new AudioConnection(*this->inputLeft, 0, *this->dryWetLeft, 0);
     leftDry->connect();
     this->connections.add(leftDry);
     
-    AudioConnection leftWet = new AudioConnection(*this->effectLeft, 0, *this->dryWetLeft, 1);
+    AudioConnection * leftWet = new AudioConnection(*this->effectLeft, 0, *this->dryWetLeft, 1);
     leftWet->connect();
     this->connections.add(leftWet);
     
@@ -32,15 +32,15 @@ EffectReverb::EffectReverb(EffectChain * effectChain, bool stereo) {
 
       this->effectRight = new AudioEffectFreeverb();
 
-      this->dryWetRight = new AudioMixer();
+      this->dryWetRight = new AudioMixer4();
       this->dryWetRight->gain(2, 0);
       this->dryWetRight->gain(3, 0);
 
-      AudioConnection rightDry = new AudioConnection(*this->inputRight, 0, *this->dryWetRight, 0);
+      AudioConnection * rightDry = new AudioConnection(*this->inputRight, 0, *this->dryWetRight, 0);
       rightDry->connect();
       this->connections.add(rightDry);
 
-      AudioConnection rightWet = new AudioConnection(*this->effectRight, 0, *this->dryWetRight, 1);
+      AudioConnection * rightWet = new AudioConnection(*this->effectRight, 0, *this->dryWetRight, 1);
       rightWet->connect();
       this->connections.add(rightWet);
 
@@ -64,8 +64,10 @@ EffectReverb::~EffectReverb() {
 String EffectReverb::type() { return "Reverb"; }
 
 void EffectReverb::destroyScreen() {
+    if (this->screen != NULL)
+        delete this->screen;
+    this->screen = NULL;
     clear();
-    delete this->screen;
 }
 
 void EffectReverb::edit() {

@@ -51,6 +51,7 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=902,271
 #include "classes/EffectChain/Effect/EffectReverb.h"
 
 #include "classes/EffectChain/EffectChain.cpp"
+#include "classes/EffectChain/Effect/EffectReverb.cpp"
 
 #include "classes/Modular/Modular.h"
 #include "classes/SoloMaker/SoloMaker.h"
@@ -115,7 +116,7 @@ SoloMaker * sm;
 EffectChain * effectChain;
 
 void setup() {
-  AudioMemory(64);
+  AudioMemory(24);
   
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.5);
@@ -148,6 +149,8 @@ int positionLeft = 0;
 int positionRight = 0;
 
 void loop(void) {
+  if (currentScreen == NULL) return ;
+
   
   if (buttonLeft.update()) {
     if (buttonLeft.fallingEdge()) {

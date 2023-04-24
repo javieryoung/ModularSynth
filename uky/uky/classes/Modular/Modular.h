@@ -15,6 +15,7 @@ class Modular : public Screenable
     void menuScreen();
     void event(String command, float param);
     void mainScreen();
+    AudioStream * output;
     
     
   private:
@@ -24,7 +25,6 @@ class Modular : public Screenable
     AudioEffectEnvelope * envelopes[8];
     AudioSynthWaveformModulated * waves[8];
     AudioConnection * patches[19];
-    AudioStream * output;
     Screen * screen;
 
 
@@ -33,6 +33,10 @@ class Modular : public Screenable
 Modular::Modular(AudioStream * output) {
     this->output = output;
 
+}
+
+Modular::~Modular() {
+    // TODO
 }
 
 void Modular::connect() {
@@ -95,10 +99,6 @@ void Modular::connect() {
     this->mixerFinal->gain(3,0);
 }
 
-
-Modular::~Modular() {
-    // TODO
-}
 
 int Modular::getAvailableVoice() {
     for (int i = 0; i < 8; i++) {

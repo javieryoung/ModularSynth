@@ -18,11 +18,10 @@ class Effect : public Screenable
     
   protected:
     Screen* screen = NULL;
-    EffectChain* effectChain;
     AudioStream * inputLeft;
     AudioStream * inputRight;
-    AudioMixer * dryWetLeft;
-    AudioMixer * dryWetRight;
+    AudioMixer4 * dryWetLeft;
+    AudioMixer4 * dryWetRight;
     LinkedList<AudioConnection*> connections;
 
 };

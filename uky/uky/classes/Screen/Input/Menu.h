@@ -30,6 +30,7 @@ class Menu : public Input
 
 Menu::Menu(Screen* screen) {
   this->screen = screen;
+  this->options = LinkedList<String>();
 }
 Menu::~Menu() {
   
@@ -44,12 +45,14 @@ void Menu::draw() {
       tft.setCursor(margin*2, margin + i * 30 + TEXT_HEIGHT + 4);
       if (i == this->value) {
         tft.fillRoundRect(margin, margin + i * 30, SCREEN_WIDTH - margin*2, 25, 8, PRIMARY);
+        
         tft.setTextColor(BLACK);
       } else {
         tft.fillRoundRect(margin, margin + i * 30, SCREEN_WIDTH - margin*2, 25, 8, BLACK);
+        
         tft.setTextColor(PRIMARY);
       }
-        
+      Serial.println(this->options.get(i));
       tft.print(this->options.get(i));
     }
   }
@@ -69,6 +72,8 @@ void Menu::moved(String which, int direction) {
 }
 
 void Menu::addOption(String option) {
+  Serial.print("Add: ");
+  Serial.println(option);
   this->options.add(option);
 }
 

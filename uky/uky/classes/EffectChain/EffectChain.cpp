@@ -5,6 +5,10 @@ EffectChain::EffectChain(bool stereo) {
     this->screen = NULL;
     this->stereo = stereo;
 }
+EffectChain::~EffectChain() {
+    // TODO
+}
+
 
 void EffectChain::destroyScreen() {
     if (this->screen != NULL)
@@ -87,7 +91,8 @@ void EffectChain::connect() {
             this->effects.get(i)->setInputLeft(currentAudioStreamLeft);
             if(this->stereo) this->effects.get(i)->setInputRight(currentAudioStreamRight);
 
-            if(this->stereo) AudioStream * nextAudioStreamRight = this->effects.get(i)->getAudioStream("right");
+            AudioStream * nextAudioStreamRight;
+            if(this->stereo) nextAudioStreamRight = this->effects.get(i)->getAudioStream("right");
             AudioStream * nextAudioStreamLeft = this->effects.get(i)->getAudioStream("left");
             
 

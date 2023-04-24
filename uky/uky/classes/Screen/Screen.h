@@ -35,6 +35,7 @@ Screen::~Screen() {
     for(int i = 0; i < this->inputs.size(); i++){
         delete this->inputs.get(i);
     }
+    this->inputs.clear();
 }
 
 void Screen::addInput(Input *&i) {

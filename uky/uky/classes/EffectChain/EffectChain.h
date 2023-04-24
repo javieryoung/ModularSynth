@@ -11,6 +11,7 @@ class EffectChain : public Screenable
 {
   public:
     EffectChain(bool stereo);
+    ~EffectChain();
     void chainListScreen();
     void effectListScreen();
     void addEffect(Effect *&e);

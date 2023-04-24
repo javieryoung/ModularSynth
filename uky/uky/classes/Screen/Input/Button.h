@@ -53,11 +53,15 @@ void Button::draw() {
 }
 
 bool Button::touched(float x, float y) {
-  this->screen->event(this->id, true);
-  return (
+  bool result = (
     x > this->x && x < this->x + this->w &&
     y > this->y && y < this->y + this->h
-  );
+  ); 
+
+  if (result) {
+    this->screen->event(this->id, true);
+  }
+  return result;
   
 }
 
