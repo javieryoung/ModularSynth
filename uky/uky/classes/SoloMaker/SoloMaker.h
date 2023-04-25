@@ -39,10 +39,11 @@ SoloMaker::~SoloMaker() {
 }
 
 void SoloMaker::destroyScreen() {
-    /*
     if (this->screen != NULL)
         delete this->screen;
-    */
+    
+    currentScreen = NULL;
+    
     this->screen = NULL;
     clear();
 }
@@ -67,6 +68,7 @@ void SoloMaker::mainScreen() {
 }
 
 void SoloMaker::event(String command, float param){
+    Serial.println(command);
     if (command == "synthButton") {
         this->destroyScreen();
         this->modular->mainScreen();

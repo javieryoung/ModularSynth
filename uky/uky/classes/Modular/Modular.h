@@ -148,6 +148,7 @@ void Modular::event(String command, float param){
 
 
 void Modular::mainScreen(){
+    clear();
     this->screen = new Screen(this);
     Input* attackDecayKnobs = new TwoKnobs(this->screen, 50, 150, 40, 40, 10);
     attackDecayKnobs->setUpKnob("left", "attack", "A", 0, 3, 0);

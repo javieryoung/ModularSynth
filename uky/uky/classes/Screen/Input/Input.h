@@ -14,7 +14,7 @@ class Input
     virtual void clicked(String which);
     virtual void addOption(String option); // Menu
     virtual void setUpKnob(String which, String id, String label, float minValue, float maxValue, float startingValue); // TwoKnobs
-    void select(bool s);
+    virtual void select(bool s);
     virtual void refresh();
     bool selected;
     

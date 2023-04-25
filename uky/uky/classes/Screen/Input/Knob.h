@@ -7,7 +7,7 @@
 #include "Input.h"
 
 
-extern Adafruit_ILI9341 tft;
+#include "../../../externs.h"
 
 class Knob : public Input
 {
@@ -20,6 +20,7 @@ class Knob : public Input
     void moved(String which, int direction);
     void clicked(String which);
     void refresh();
+    void select(bool s);
     
   private:
     float x, y, w, h, minVal, maxVal;
@@ -123,4 +124,8 @@ void Knob::refresh() {
 
 
 
+void Knob::select(bool s) {
+  this->selected = s;
+  this->draw();
+}
 #endif

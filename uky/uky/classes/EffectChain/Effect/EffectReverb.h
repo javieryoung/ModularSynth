@@ -4,13 +4,12 @@
 #include "Arduino.h"
 class EffectChain;
 #include "../EffectChain.h"
-
-extern Screen* currentScreen;
+#include "../../../externs.h"
 
 class EffectReverb : public Effect
 {
   public:
-    EffectReverb(EffectChain * effectChain, bool stereo);
+    EffectReverb(EffectChain * chainList, bool stereo);
     ~EffectReverb();
     String type();
     void destroyScreen();
@@ -19,12 +18,9 @@ class EffectReverb : public Effect
     void setDamping();
     void setRoomSize();
     void setWet();
-    EffectChain* effectChain;
     
   protected:
     float roomSize, damping, lowPass, highPass;
-    AudioEffectFreeverb * effectLeft;
-    AudioEffectFreeverb * effectRight;
 
 };
 

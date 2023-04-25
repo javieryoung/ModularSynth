@@ -3,7 +3,6 @@
 
 #include "Arduino.h"
 #include "../Screenable.h"
-#include "Effect/Effect.h"
 
 const String availableEffects[] = {"Reverb", "Delay"};
 
@@ -26,8 +25,7 @@ class EffectChain : public Screenable
     
   protected:
     LinkedList<Effect*> effects;
-    LinkedList<AudioConnection*> connectionsLeft;
-    LinkedList<AudioConnection*> connectionsRight;
+    LinkedList<AudioConnection*> connections;
     Screen* screen = NULL;
     String showing;
     void destroyScreen();

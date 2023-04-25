@@ -3,8 +3,7 @@
 
 #include "Arduino.h"
 #include "../Screen.h"
-
-extern Adafruit_ILI9341 tft;
+#include "../../../externs.h"
 
 class Menu : public Input
 {
@@ -18,6 +17,7 @@ class Menu : public Input
     void clicked(String which);
     void addOption(String option);
     void refresh();
+    void select(bool s);
     
   protected:
     bool selected;
@@ -86,6 +86,10 @@ void Menu::refresh() {
 }
 
 
+void Menu::select(bool s) {
+  this->selected = s;
+  this->draw();
+}
 
 
 #endif

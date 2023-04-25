@@ -5,9 +5,7 @@
 #include "Arduino.h"
 #include "../Screen.h"
 #include "Input.h"
-
-
-extern Adafruit_ILI9341 tft;
+#include "../../../externs.h"
 
 class Button : public Input
 {
@@ -19,6 +17,7 @@ class Button : public Input
     bool touched(float x, float y);
     void clicked(String which);
     void refresh();
+    void select(bool s);
     
   private:
     float x, y, w, h, minVal, maxVal;
@@ -57,12 +56,14 @@ bool Button::touched(float x, float y) {
     x > this->x && x < this->x + this->w &&
     y > this->y && y < this->y + this->h
   ); 
-
-  if (result) {
-    this->screen->event(this->id, true);
-  }
   return result;
-  
+}
+
+
+void Button::select(bool s) {
+  this->selected = s;
+  this->draw();
+  this->screen->event(this->id, true);
 }
 
 void Button::clicked(String which) {

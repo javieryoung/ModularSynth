@@ -1,51 +1,24 @@
 #ifndef EffectReverb_cpp_guard
 #define EffectReverb_cpp_guard
 
-
-extern Screen * currentScreen;
+#include "../../../externs.h"
 
 EffectReverb::EffectReverb(EffectChain * effectChain, bool stereo) {
+    this->stereo = stereo;
+    this->wet = 100;
     this->effectChain = effectChain;
     this->roomSize = 0.5;
     this->damping = 0.5;
     this->lowPass = 0;
     this->highPass = 0;
-    this->stereo = stereo;
-    this->wet = 100;
-    
 
+    // create effect
     this->effectLeft = new AudioEffectFreeverb();
-
-    this->dryWetLeft = new AudioMixer4();
-    this->dryWetLeft->gain(2, 0);
-    this->dryWetLeft->gain(3, 0);
-
-    AudioConnection * leftDry = new AudioConnection(*this->inputLeft, 0, *this->dryWetLeft, 0);
-    leftDry->connect();
-    this->connections.add(leftDry);
-    
-    AudioConnection * leftWet = new AudioConnection(*this->effectLeft, 0, *this->dryWetLeft, 1);
-    leftWet->connect();
-    this->connections.add(leftWet);
     
     if(this->stereo) {
-
       this->effectRight = new AudioEffectFreeverb();
-
-      this->dryWetRight = new AudioMixer4();
-      this->dryWetRight->gain(2, 0);
-      this->dryWetRight->gain(3, 0);
-
-      AudioConnection * rightDry = new AudioConnection(*this->inputRight, 0, *this->dryWetRight, 0);
-      rightDry->connect();
-      this->connections.add(rightDry);
-
-      AudioConnection * rightWet = new AudioConnection(*this->effectRight, 0, *this->dryWetRight, 1);
-      rightWet->connect();
-      this->connections.add(rightWet);
-
     }
-
+    this->doMainConnections();
     this->setDamping();
     this->setRoomSize();
     this->setWet();
@@ -103,14 +76,6 @@ void EffectReverb::setRoomSize() {
   if (this->stereo) this->effectRight->roomsize(this->roomSize/100);
 }
 
-void EffectReverb::setWet() {
-  this->dryWetLeft->gain(0, 1-(this->wet/100));
-  this->dryWetLeft->gain(1, (this->wet/100));
-  if (this->stereo) {
-    this->dryWetRight->gain(0, 1-(this->wet/100));
-    this->dryWetRight->gain(1, (this->wet/100));
-  }
-}
 
 void EffectReverb::event(String command, float param){
   if (command == "clicked" && param == 0) { // click sobre izquierdo

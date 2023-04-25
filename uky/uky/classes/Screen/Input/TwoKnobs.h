@@ -5,9 +5,7 @@
 #include "../Screen.h"
 #include "Input.h"
 #include "Knob.h"
-
-
-extern Adafruit_ILI9341 tft;
+#include "../../../externs.h"
 
 class TwoKnobs : public Input
 {
@@ -102,5 +100,9 @@ void TwoKnobs::refresh() {
   knob2->refresh();
 }
 
+void TwoKnobs::select(bool s) {
+  this->selected = s;
+  this->draw();
+}
 
 #endif
