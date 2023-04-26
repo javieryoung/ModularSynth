@@ -6,7 +6,7 @@ class EffectChain;
 #include "../EffectChain.h"
 #include "../../../externs.h"
 
-class EffectReverb : public Effect
+class EffectReverb : public EffectPreFiltered
 {
   public:
     EffectReverb(EffectChain * chainList, bool stereo);
@@ -20,7 +20,7 @@ class EffectReverb : public Effect
     void setWet();
     
   protected:
-    float roomSize, damping, lowPass, highPass;
+    float roomSize, damping;
 
 };
 

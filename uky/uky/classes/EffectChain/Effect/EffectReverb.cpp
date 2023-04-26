@@ -52,8 +52,8 @@ void EffectReverb::edit() {
     this->screen->addInput(k);
 
     Input* k2 = new TwoKnobs(this->screen, 180, 40, 40, 40, 15);
-    k2->setUpKnob("left", "highPass", "HP", 0, 100, this->highPass);
-    k2->setUpKnob("right", "lowPass", "LP", 0, 100, this->lowPass);
+    k2->setUpKnob("left", "highPass", "HP", 20, 20000, 0);      // start with no filter
+    k2->setUpKnob("right", "lowPass", "LP", 20, 20000, 20000);  // start with no filter
     this->screen->addInput(k2);
 
     Input* k3 = new TwoKnobs(this->screen, 10, 150, 40, 40, 15);
@@ -84,10 +84,11 @@ void EffectReverb::event(String command, float param){
   }
   if (command == "highPass") {
     this->highPass = param;
-    
+    this->setHighPass();
   }
   if (command == "lowPass") {
     this->lowPass = param;
+    this->setLowPass();
   }
   if (command == "damping") {
     this->damping = param;
