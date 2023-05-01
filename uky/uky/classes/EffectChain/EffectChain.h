@@ -2,17 +2,16 @@
 #define EffectChain_guard
 
 #include "Arduino.h"
-#include "../Screenable.h"
 
 const String availableEffects[] = {"Reverb", "Delay"};
 
 class EffectChain : public Screenable
 {
   public:
-    EffectChain(bool stereo);
+    EffectChain(bool stereo, Screenable * parent);
     ~EffectChain();
-    void chainListScreen();
-    void effectListScreen();
+    void addEffectScreen();
+    void mainScreen() override;
     void addEffect(Effect *&e);
     void editEffect(int position);
     void event(String command, float param);
@@ -22,6 +21,7 @@ class EffectChain : public Screenable
     void setOutputRight(AudioStream *);
     void connect();
     void destroyConnections();
+    Screenable * parent;
     
   protected:
     LinkedList<Effect*> effects;

@@ -1,8 +1,6 @@
-#ifndef Effect_guard
-#define Effect_guard
+#ifndef EffectPreFiltered_guard
+#define EffectPreFiltered_guard
 
-#include "Arduino.h"
-class EffectChain;
 class EffectPreFiltered : public Effect
 {
   public:
@@ -10,8 +8,9 @@ class EffectPreFiltered : public Effect
     void setLowPass();
     void setHighPass();
     float lowPass, highPass;
+    void doMainConnections();
 
-  protected:
+
     AudioFilterStateVariable * lowPassLeft; 
     AudioFilterStateVariable * highPassLeft; 
     AudioFilterStateVariable * lowPassRight; 
@@ -21,6 +20,9 @@ class EffectPreFiltered : public Effect
 
 };
 
+EffectPreFiltered::EffectPreFiltered() {
+
+}
 
 
 void EffectPreFiltered::doMainConnections() {

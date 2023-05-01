@@ -43,7 +43,7 @@ void EffectReverb::destroyScreen() {
     clear();
 }
 
-void EffectReverb::edit() {
+void EffectReverb::mainScreen() {
     this->screen = new Screen(this);
 
     Input* k = new TwoKnobs(this->screen, 10, 40, 40, 40, 15);
@@ -80,7 +80,7 @@ void EffectReverb::setRoomSize() {
 void EffectReverb::event(String command, float param){
   if (command == "clicked" && param == 0) { // click sobre izquierdo
       this->destroyScreen(); // solo quiero borrar la screen, el efecto me interesa quedarmelo
-      this->effectChain->chainListScreen();
+      this->effectChain->mainScreen();
   }
   if (command == "highPass") {
     this->highPass = param;

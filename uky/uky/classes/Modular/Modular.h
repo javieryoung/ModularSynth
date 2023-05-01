@@ -14,7 +14,7 @@ class Modular : public Screenable
     void connect();
     void menuScreen();
     void event(String command, float param);
-    void mainScreen();
+    void mainScreen() override;
     AudioStream * output;
     
     

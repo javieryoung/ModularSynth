@@ -8,6 +8,7 @@ class Screenable
     Screenable();
     ~Screenable();
     virtual void event(String command, float param);
+    virtual void mainScreen()=0;
 };
 
 Screenable::Screenable() {

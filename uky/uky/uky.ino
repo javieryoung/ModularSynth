@@ -49,6 +49,7 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=902,271
 #include "classes/Screen/Input/Button.h"
 
 #include "classes/EffectChain/Effect/Effect.h"
+#include "classes/EffectChain/Effect/EffectPreFiltered.h"
 #include "classes/EffectChain/EffectChain.h"
 #include "classes/EffectChain/Effect/EffectReverb.h"
 
@@ -249,8 +250,7 @@ void playNote(int direction) {
     indexInScale = 0;
   }
   currentNote = currentNote + (scales[selectedScale][indexInScale] * direction);
-
-  Serial.print(" que es  ");
+  
   Serial.println(noteName(currentNote));
   sm->modular->playNote(notes[currentNote]);
 

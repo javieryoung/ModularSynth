@@ -1,13 +1,12 @@
 #ifndef Effect_guard
 #define Effect_guard
 
-#include "Arduino.h"
 class EffectChain;
 class Effect : public Screenable
 {
   public:
     Effect();
-    virtual void edit();
+    virtual void mainScreen();
     virtual String type();
     
     AudioStream * getInput(String which);
@@ -16,11 +15,10 @@ class Effect : public Screenable
     float wet; // 0: dry, 1: wet
     void doMainConnections();
     EffectChain * effectChain;
-    
+    void setWet();
     AudioEffectFreeverb * effectLeft;
     AudioEffectFreeverb * effectRight;
 
-  protected:
     Screen* screen = NULL;
     AudioStream * inputLeft;
     AudioStream * inputRight;

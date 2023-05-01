@@ -1,9 +1,10 @@
 #ifndef EffectChain_cpp_guard
 #define EffectChain_cpp_guard
 
-EffectChain::EffectChain(bool stereo) {
+EffectChain::EffectChain(bool stereo, Screenable * parent) {
     this->screen = NULL;
     this->stereo = stereo;
+    this->parent = parent;
 }
 EffectChain::~EffectChain() {
     // TODO
@@ -17,7 +18,7 @@ void EffectChain::destroyScreen() {
     clear();
 }
 
-void EffectChain::chainListScreen() {
+void EffectChain::mainScreen() {
     destroyScreen();
     this->screen = new Screen(this);
     Input* m = new Menu(this->screen);
@@ -30,12 +31,12 @@ void EffectChain::chainListScreen() {
     
     this->screen->addInput(m);
     this->screen->draw();
-    this->showing = "chainList";
+    this->showing = "mainScreen";
     currentScreen = this->screen;
 }
 
 
-void EffectChain::effectListScreen() {
+void EffectChain::addEffectScreen() {
     destroyScreen();
     this->screen = new Screen(this);
     Input* m = new Menu(this->screen);
@@ -44,7 +45,7 @@ void EffectChain::effectListScreen() {
     }
     this->screen->addInput(m);
     this->screen->draw();
-    this->showing = "effectList";
+    this->showing = "effectListScreen";
     currentScreen = this->screen;
 }
 
@@ -118,32 +119,37 @@ void EffectChain::connect() {
 
 void EffectChain::editEffect(int position) {
     this->destroyScreen();
-    this->effects.get(position)->edit();
+    this->effects.get(position)->mainScreen();
 }
 
 
 void EffectChain::event(String command, float param){
-    Serial.println(param);
-    if (this->showing == "chainList") {
+
+    if (this->showing == "mainScreen") {
+        
+        if (command == "clicked" && param == 0) { // click sobre izquierdo
+            this->destroyScreen();
+            this->parent->mainScreen();
+        }
         if (command == "selected") {
             if (param == this->effects.size()) {
-                this->effectListScreen();
+                this->addEffectScreen();
             } else {
                 this->editEffect(param);
             }
         }
     } else {
-        if (this->showing == "effectList") {
+        if (this->showing == "effectListScreen") {
+            if (command == "clicked" && param == 0) { // click sobre izquierdo
+                this->destroyScreen();
+                this->mainScreen();
+            }
             if (command == "selected") {
                 if (param == 0) {
                     // REVERB
-                    Serial.println("A");
                     Effect * e = new EffectReverb(this, this->stereo);
-                    Serial.println("B");
                     this->addEffect(e);
-                    Serial.println("C");
                     this->editEffect(this->effects.size()-1);
-                    Serial.println("D");
                 }
                 if (param == 1) {
                     // DELAY

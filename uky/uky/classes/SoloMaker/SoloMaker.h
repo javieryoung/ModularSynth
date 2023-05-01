@@ -7,7 +7,7 @@ class SoloMaker : public Screenable
   public:
     SoloMaker(AudioStream * output);
     ~SoloMaker();
-    void mainScreen();
+    void mainScreen() override;
     void event(String command, float param);
     AudioStream * output;
     Screen * screen;
@@ -22,7 +22,7 @@ SoloMaker::SoloMaker(AudioStream * output) {
     this->modular = new Modular(this->modularOutput);
     this->modular->connect();
 
-    this->effectChain = new EffectChain(false);
+    this->effectChain = new EffectChain(false, this);
     this->effectChain->setInputLeft(this->modular->output);
     this->effectChain->setOutputLeft(output);
     this->effectChain->connect();
@@ -48,7 +48,7 @@ void SoloMaker::destroyScreen() {
     clear();
 }
 
-void SoloMaker::mainScreen() {
+void SoloMaker::mainScreen(){
     this->screen = new Screen(this);
     
     Input* scaleButton = new Button(this->screen, "scaleButton", 10, 10, 80, 50, "Scale");
@@ -75,7 +75,7 @@ void SoloMaker::event(String command, float param){
     }
     if (command == "effectsButton") {
         this->destroyScreen();
-        this->effectChain->chainListScreen();
+        this->effectChain->mainScreen();
     }
     
 }

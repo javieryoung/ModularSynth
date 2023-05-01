@@ -1,19 +1,17 @@
 #ifndef EffectReverb_guard
 #define EffectReverb_guard
 
-#include "Arduino.h"
 class EffectChain;
-#include "../EffectChain.h"
+
 #include "../../../externs.h"
 
-class EffectReverb : public EffectPreFiltered
-{
+class EffectReverb : public EffectPreFiltered {
   public:
     EffectReverb(EffectChain * chainList, bool stereo);
     ~EffectReverb();
     String type();
     void destroyScreen();
-    void edit();
+    void mainScreen() override;
     void event(String command, float param);
     void setDamping();
     void setRoomSize();

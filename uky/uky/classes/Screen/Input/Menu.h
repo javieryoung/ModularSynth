@@ -72,13 +72,14 @@ void Menu::moved(String which, int direction) {
 }
 
 void Menu::addOption(String option) {
-  Serial.print("Add: ");
-  Serial.println(option);
   this->options.add(option);
 }
 
 void Menu::clicked(String which) {
-  this->screen->event("selected", this->value);
+  if (which == "right")
+    this->screen->event("selected", this->value);
+  else
+    this->screen->event("clicked", 0); // clicked left
 }
 
 void Menu::refresh() {
