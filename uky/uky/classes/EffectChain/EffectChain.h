@@ -9,7 +9,7 @@ class EffectChain : public Screenable
 {
   public:
     EffectChain(bool stereo, Screenable * parent);
-    ~EffectChain();
+    virtual ~EffectChain();
     void addEffectScreen();
     void mainScreen() override;
     void addEffect(Effect *&e);

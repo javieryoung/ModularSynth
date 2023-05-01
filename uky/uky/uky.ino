@@ -121,7 +121,7 @@ SoloMaker * sm;
 EffectChain * effectChain;
 
 void setup() {
-  AudioMemory(24);
+  AudioMemory(32);
   
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.5);
@@ -250,7 +250,7 @@ void playNote(int direction) {
     indexInScale = 0;
   }
   currentNote = currentNote + (scales[selectedScale][indexInScale] * direction);
-  
+
   Serial.println(noteName(currentNote));
   sm->modular->playNote(notes[currentNote]);
 

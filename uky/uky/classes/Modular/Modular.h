@@ -8,7 +8,7 @@ class Modular : public Screenable
 {
   public:
     Modular(AudioStream * output);
-    ~Modular();
+    virtual ~Modular();
     int getAvailableVoice();
     void playNote(float freq);
     void connect();
@@ -51,7 +51,7 @@ void Modular::connect() {
         this->envelopes[i]->attack(10);
         this->envelopes[i]->decay(1);
         this->envelopes[i]->sustain(1);
-        this->envelopes[i]->release(1000);
+        this->envelopes[i]->release(50);
         
     }
     // waves

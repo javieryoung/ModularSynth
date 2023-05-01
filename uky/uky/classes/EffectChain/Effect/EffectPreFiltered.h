@@ -15,8 +15,6 @@ class EffectPreFiltered : public Effect
     AudioFilterStateVariable * highPassLeft; 
     AudioFilterStateVariable * lowPassRight; 
     AudioFilterStateVariable * highPassRight; 
-    AudioMixer4 * preFilterMixerLeft;
-    AudioMixer4 * preFilterMixerRight;
 
 };
 
@@ -32,13 +30,6 @@ void EffectPreFiltered::doMainConnections() {
     // this amp is just the input
     this->ampLeft = new AudioAmplifier();
     this->ampLeft->gain(1);
-
-    this->preFilterMixerLeft = new AudioMixer4();
-    this->preFilterMixerLeft->gain(0, 0.5);
-    this->preFilterMixerLeft->gain(1, 0.5);
-    this->preFilterMixerLeft->gain(2, 0);
-    this->preFilterMixerLeft->gain(3, 0);
-
     
     // LOW PASS
     this->lowPassLeft = new AudioFilterStateVariable();
@@ -47,28 +38,19 @@ void EffectPreFiltered::doMainConnections() {
     AudioConnection * leftInputToLowPass = new AudioConnection(*this->ampLeft, 0, *this->lowPassLeft, 0);
     leftInputToLowPass->connect();
     this->connections.add(leftInputToLowPass);
-
-    AudioConnection * lowPassToMixer = new AudioConnection(*this->lowPassLeft, 0, *this->preFilterMixerLeft, 0);
-    lowPassToMixer->connect();
-    this->connections.add(lowPassToMixer);
     
     // HIGH PASS
     this->highPassLeft = new AudioFilterStateVariable();
-    this->highPassLeft->resonance(0.7); // no resonance
+    this->lowPassLeft->resonance(0.7); // no resonance
 
-    AudioConnection * leftInputToHighPass = new AudioConnection(*this->ampLeft, 0, *this->highPassLeft, 0);
-    leftInputToHighPass->connect();
-    this->connections.add(leftInputToHighPass);
+    AudioConnection * lowPassToHighPass = new AudioConnection(*this->lowPassLeft, 0, *this->highPassLeft, 0);
+    lowPassToHighPass->connect();
+    this->connections.add(lowPassToHighPass);
 
-    AudioConnection * highPassToMixer = new AudioConnection(*this->highPassLeft, 2, *this->preFilterMixerLeft, 1);
-    highPassToMixer->connect();
-    this->connections.add(highPassToMixer);
+    AudioConnection * highPassToEffect = new AudioConnection(*this->highPassLeft, 2, *this->effectLeft, 0);
+    highPassToEffect->connect();
+    this->connections.add(highPassToEffect);
 
-
-    // connect filter mixer to effect
-    AudioConnection * filterMixerToEffect = new AudioConnection(*this->preFilterMixerLeft, 0, *this->effectLeft, 0);
-    filterMixerToEffect->connect();
-    this->connections.add(filterMixerToEffect);
 
     this->dryWetLeft = new AudioMixer4();
     this->dryWetLeft->gain(2, 0);
@@ -86,13 +68,6 @@ void EffectPreFiltered::doMainConnections() {
       // this amp is just the input
       this->ampRight = new AudioAmplifier();
       this->ampRight->gain(1);
-
-      this->preFilterMixerRight = new AudioMixer4();
-      this->preFilterMixerRight->gain(0, 0.5);
-      this->preFilterMixerRight->gain(1, 0.5);
-      this->preFilterMixerRight->gain(2, 0);
-      this->preFilterMixerRight->gain(3, 0);
-
       
       // LOW PASS
       this->lowPassRight = new AudioFilterStateVariable();
@@ -101,28 +76,19 @@ void EffectPreFiltered::doMainConnections() {
       AudioConnection * rightInputToLowPass = new AudioConnection(*this->ampRight, 0, *this->lowPassRight, 0);
       rightInputToLowPass->connect();
       this->connections.add(rightInputToLowPass);
-
-      AudioConnection * lowPassToMixer = new AudioConnection(*this->lowPassRight, 0, *this->preFilterMixerRight, 0);
-      lowPassToMixer->connect();
-      this->connections.add(lowPassToMixer);
       
       // HIGH PASS
       this->highPassRight = new AudioFilterStateVariable();
       this->highPassRight->resonance(0.7); // no resonance
 
-      AudioConnection * rightInputToHighPass = new AudioConnection(*this->ampRight, 0, *this->highPassRight, 0);
-      rightInputToHighPass->connect();
-      this->connections.add(rightInputToHighPass);
+      AudioConnection * lowPassRighToHighPass = new AudioConnection(*this->lowPassRight, 0, *this->highPassRight, 0);
+      lowPassRighToHighPass->connect();
+      this->connections.add(lowPassRighToHighPass);
 
-      AudioConnection * highPassToMixer = new AudioConnection(*this->highPassRight, 2, *this->preFilterMixerRight, 1);
-      highPassToMixer->connect();
-      this->connections.add(highPassToMixer);
+      AudioConnection * highPassRightToEffect = new AudioConnection(*this->highPassRight, 2, *this->effectRight, 1);
+      highPassRightToEffect->connect();
+      this->connections.add(highPassRightToEffect);
 
-
-      // connect filter mixer to effect
-      AudioConnection * filterMixerToEffect = new AudioConnection(*this->preFilterMixerRight, 0, *this->effectRight, 0);
-      filterMixerToEffect->connect();
-      this->connections.add(filterMixerToEffect);
 
       this->dryWetRight = new AudioMixer4();
       this->dryWetRight->gain(2, 0);
