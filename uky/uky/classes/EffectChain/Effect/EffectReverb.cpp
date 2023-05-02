@@ -12,13 +12,22 @@ EffectReverb::EffectReverb(EffectChain * effectChain, bool stereo) {
     this->lowPass = 0;
     this->highPass = 0;
 
+    this->doMainConnections();
+    
     // create effect
     this->effectLeft = new AudioEffectFreeverb();
+    AudioConnection * filteredToEffectLeft = new AudioConnection(*this->filteredLeft, 0, *this->effectLeft, 0);
+    filteredToEffectLeft->connect();
+    this->connections.add(filteredToEffectLeft);
     
     if(this->stereo) {
       this->effectRight = new AudioEffectFreeverb();
+      AudioConnection * filteredToEffectRight = new AudioConnection(*this->filteredRight, 0, *this->effectRight, 0);
+      filteredToEffectRight->connect();
+      this->connections.add(filteredToEffectRight);
+      
     }
-    this->doMainConnections();
+
     this->setDamping();
     this->setRoomSize();
     this->setWet();

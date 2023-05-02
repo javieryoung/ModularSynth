@@ -15,8 +15,9 @@ class EffectReverb : public EffectPreFiltered {
     void event(String command, float param);
     void setDamping();
     void setRoomSize();
-    void setWet();
-    
+    AudioEffectFreeverb * effectLeft;
+    AudioEffectFreeverb * effectRight;
+
   protected:
     float roomSize, damping;
 

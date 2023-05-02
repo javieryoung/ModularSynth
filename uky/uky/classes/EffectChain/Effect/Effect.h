@@ -16,10 +16,10 @@ class Effect : public Screenable
     void doMainConnections();
     EffectChain * effectChain;
     void setWet();
-    AudioEffectFreeverb * effectLeft;
-    AudioEffectFreeverb * effectRight;
 
     Screen* screen = NULL;
+    AudioStream * effectLeft;
+    AudioStream * effectRight;
     AudioStream * inputLeft;
     AudioStream * inputRight;
     AudioMixer4 * dryWetLeft; // OUTPUT

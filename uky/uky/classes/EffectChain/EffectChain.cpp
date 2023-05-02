@@ -153,6 +153,9 @@ void EffectChain::event(String command, float param){
                 }
                 if (param == 1) {
                     // DELAY
+                    Effect * e = new EffectDelay(this, this->stereo);
+                    this->addEffect(e);
+                    this->editEffect(this->effects.size()-1);
 
                 }
             }

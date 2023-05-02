@@ -15,6 +15,8 @@ class EffectPreFiltered : public Effect
     AudioFilterStateVariable * highPassLeft; 
     AudioFilterStateVariable * lowPassRight; 
     AudioFilterStateVariable * highPassRight; 
+    AudioAmplifier * filteredLeft;
+    AudioAmplifier * filteredRight;
 
 };
 
@@ -31,6 +33,9 @@ void EffectPreFiltered::doMainConnections() {
     this->ampLeft = new AudioAmplifier();
     this->ampLeft->gain(1);
     
+    this->filteredLeft = new AudioAmplifier();
+    this->filteredLeft->gain(1);
+
     // LOW PASS
     this->lowPassLeft = new AudioFilterStateVariable();
     this->lowPassLeft->resonance(0.7); // no resonance
@@ -47,7 +52,7 @@ void EffectPreFiltered::doMainConnections() {
     lowPassToHighPass->connect();
     this->connections.add(lowPassToHighPass);
 
-    AudioConnection * highPassToEffect = new AudioConnection(*this->highPassLeft, 2, *this->effectLeft, 0);
+    AudioConnection * highPassToEffect = new AudioConnection(*this->highPassLeft, 2, *this->filteredLeft, 0);
     highPassToEffect->connect();
     this->connections.add(highPassToEffect);
 
@@ -69,6 +74,9 @@ void EffectPreFiltered::doMainConnections() {
       this->ampRight = new AudioAmplifier();
       this->ampRight->gain(1);
       
+      this->filteredRight = new AudioAmplifier();
+      this->filteredRight->gain(1);
+      
       // LOW PASS
       this->lowPassRight = new AudioFilterStateVariable();
       this->lowPassRight->resonance(0.7); // no resonance
@@ -85,7 +93,7 @@ void EffectPreFiltered::doMainConnections() {
       lowPassRighToHighPass->connect();
       this->connections.add(lowPassRighToHighPass);
 
-      AudioConnection * highPassRightToEffect = new AudioConnection(*this->highPassRight, 2, *this->effectRight, 1);
+      AudioConnection * highPassRightToEffect = new AudioConnection(*this->highPassRight, 2, *this->filteredRight, 1);
       highPassRightToEffect->connect();
       this->connections.add(highPassRightToEffect);
 

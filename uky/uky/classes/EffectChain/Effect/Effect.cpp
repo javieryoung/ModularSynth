@@ -59,7 +59,7 @@ String Effect::type() {
   return "Effect?";
 }
 
-void EffectReverb::setWet() {
+void Effect::setWet() {
   this->dryWetLeft->gain(0, 1-(this->wet/100));
   this->dryWetLeft->gain(1, (this->wet/100));
   if (this->stereo) {
