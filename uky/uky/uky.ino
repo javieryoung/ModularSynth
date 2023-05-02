@@ -156,7 +156,6 @@ int positionRight = 0;
 void loop(void) {
   if (currentScreen == NULL) return ;
 
-  
   if (buttonLeft.update()) {
     if (buttonLeft.fallingEdge()) {
       if (currentScreen != NULL) currentScreen->clicked("left");
@@ -168,11 +167,9 @@ void loop(void) {
     }
   } 
   
-  
   if (ts.touched()) {
     TS_Point p = ts.getPoint();
   
-
     // CALIBRATED
     float topLeftX = 3792;
     float topLeftY = 3873;
