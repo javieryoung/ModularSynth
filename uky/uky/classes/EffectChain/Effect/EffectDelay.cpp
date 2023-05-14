@@ -12,53 +12,50 @@ EffectDelay::EffectDelay(EffectChain * effectChain, bool stereo) {
     this->lowPass = 0;
     this->highPass = 0;
 
+    this->effectLeft = new AudioMixer4(); // delay mixer
+    if (this->stereo) this->effectRight = new AudioMixer4(); // delay mixer
     this->doMainConnections();
     
     // create effect
     this->delayLeft = new AudioEffectDelay();
     for (int i = 1; i <= 7; i ++) this->delayLeft->disable(i);
-    AudioMixer4 * delayMixer = new AudioMixer4(); // delay mixer
-    delayMixer->gain(0, 1-(this->feedback));
-    delayMixer->gain(1, this->feedback);
-    delayMixer->gain(2,0);
-    delayMixer->gain(3,0);
+    this->effectLeft->gain(0, 1-(this->feedback));
+    this->effectLeft->gain(1, this->feedback);
+    this->effectLeft->gain(2,0);
+    this->effectLeft->gain(3,0);
 
-    AudioConnection * leftInputToDelayMixer = new AudioConnection(*this->filteredLeft, 0, * delayMixer, 0);
+    AudioConnection * leftInputToDelayMixer = new AudioConnection(*this->filteredLeft, 0, * this->effectLeft, 0);
     leftInputToDelayMixer->connect();
     this->connections.add(leftInputToDelayMixer);
 
-    AudioConnection * leftDelayMixerToDelay = new AudioConnection(* delayMixer, 0, *this->delayLeft, 0);
+    AudioConnection * leftDelayMixerToDelay = new AudioConnection(* this->effectLeft, 0, *this->delayLeft, 0);
     leftDelayMixerToDelay->connect();
     this->connections.add(leftDelayMixerToDelay);
 
-    AudioConnection * leftDelayToDelayMixer = new AudioConnection(*this->delayLeft, 0, * delayMixer, 0);
+    AudioConnection * leftDelayToDelayMixer = new AudioConnection(*this->delayLeft, 0, * this->effectLeft, 0);
     leftDelayToDelayMixer->connect();
     this->connections.add(leftDelayToDelayMixer);
-
-    this->effectLeft = delayMixer;
     
     if(this->stereo) {
       this->delayRight = new AudioEffectDelay();
       for (int i = 1; i <= 7; i ++) this->delayRight->disable(i);
-      AudioMixer4 * delayMixer = new AudioMixer4(); // delay mixer
-      delayMixer->gain(0, 1-(this->feedback));
-      delayMixer->gain(1, this->feedback);
-      delayMixer->gain(2,0);
-      delayMixer->gain(3,0);
+      this->effectRight->gain(0, 1-(this->feedback));
+      this->effectRight->gain(1, this->feedback);
+      this->effectRight->gain(2,0);
+      this->effectRight->gain(3,0);
 
-      AudioConnection * rightInputToDelayMixer = new AudioConnection(*this->filteredRight, 0, * delayMixer, 0);
+      AudioConnection * rightInputToDelayMixer = new AudioConnection(*this->filteredRight, 0, * this->effectRight, 0);
       rightInputToDelayMixer->connect();
       this->connections.add(rightInputToDelayMixer);
 
-      AudioConnection * rightDelayMixerToDelay = new AudioConnection(* delayMixer, 0, *this->delayRight, 0);
+      AudioConnection * rightDelayMixerToDelay = new AudioConnection(* this->effectRight, 0, *this->delayRight, 0);
       rightDelayMixerToDelay->connect();
       this->connections.add(rightDelayMixerToDelay);
 
-      AudioConnection * rightDelayToDelayMixer = new AudioConnection(*this->delayRight, 0, * delayMixer, 0);
+      AudioConnection * rightDelayToDelayMixer = new AudioConnection(*this->delayRight, 0, * this->effectRight, 0);
       rightDelayToDelayMixer->connect();
       this->connections.add(rightDelayToDelayMixer);
 
-      this->effectRight = delayMixer;
       
     }
     this->setFeedback();

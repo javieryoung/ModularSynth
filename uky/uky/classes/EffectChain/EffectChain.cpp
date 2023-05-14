@@ -144,6 +144,7 @@ void EffectChain::event(String command, float param){
                 this->destroyScreen();
                 this->mainScreen();
             }
+            Serial.println(param);
             if (command == "selected") {
                 if (param == 0) {
                     // REVERB

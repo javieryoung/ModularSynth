@@ -5,7 +5,7 @@ class EffectChain;
 
 #include "../../../externs.h"
 
-class EffectReverb : public EffectPreFiltered {
+class EffectReverb : public Effect {
   public:
     EffectReverb(EffectChain * chainList, bool stereo);
     ~EffectReverb();

@@ -56,7 +56,6 @@ void EffectPreFiltered::doMainConnections() {
     highPassToEffect->connect();
     this->connections.add(highPassToEffect);
 
-
     this->dryWetLeft = new AudioMixer4();
     this->dryWetLeft->gain(2, 0);
     this->dryWetLeft->gain(3, 0);

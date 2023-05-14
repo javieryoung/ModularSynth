@@ -69,8 +69,8 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=902,271
 #include "waves/Triangle.h"
 
 #include <Bounce.h>
-const int buttonPinLeft = 17;
-const int buttonPinRight = 16;
+const int buttonPinLeft = 3;
+const int buttonPinRight = 17;
 Bounce buttonLeft = Bounce(buttonPinLeft, 10);
 Bounce buttonRight = Bounce(buttonPinRight, 10);
 
@@ -82,20 +82,20 @@ Bounce buttonRight = Bounce(buttonPinRight, 10);
 
 
 // TEENSY 3.2
+/*
 #define TFT_DC      20
 #define TFT_CS      21
 #define CS_PIN  8
 Encoder encoderLeft(1, 3);
 Encoder encoderRight(4, 5);
+*/
 
-/*
 // TEENSY 4.0
 #define TFT_DC      9
 #define TFT_CS      14
 #define CS_PIN  5
-Encoder encoderLeft(1, 0);
-Encoder encoderRight(4, 22);
-*/
+Encoder encoderLeft(0, 1);
+Encoder encoderRight(22, 4);
 
 
 
@@ -128,8 +128,12 @@ void setup() {
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.5);
 
-  pinMode(buttonPinLeft, INPUT_PULLUP);
-  pinMode(buttonPinRight, INPUT_PULLUP);
+  pinMode(buttonPinLeft, INPUT_PULLDOWN);
+  pinMode(buttonPinRight, INPUT_PULLDOWN);
+  pinMode(1, INPUT_PULLDOWN);
+  pinMode(0, INPUT_PULLDOWN);
+  pinMode(4, INPUT_PULLDOWN);
+  pinMode(22, INPUT_PULLDOWN);
 
   SPI.setMOSI(7);
   SPI.setSCK(14);
@@ -160,11 +164,13 @@ void loop(void) {
 
   if (buttonLeft.update()) {
     if (buttonLeft.fallingEdge()) {
+      Serial.println("left click");
       if (currentScreen != NULL) currentScreen->clicked("left");
     }
   } 
   if (buttonRight.update()) {
     if (buttonRight.fallingEdge()) {
+      Serial.println("right click");
       if (currentScreen != NULL) currentScreen->clicked("right");
     }
   } 

@@ -16,7 +16,6 @@ class EffectDelay : public EffectPreFiltered {
     void setDelayTime();
     void setFeedback();
     
-  protected:
     float feedback, delayTime;
     AudioEffectDelay * delayRight;
     AudioEffectDelay * delayLeft;

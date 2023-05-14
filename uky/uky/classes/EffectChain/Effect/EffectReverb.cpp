@@ -9,25 +9,20 @@ EffectReverb::EffectReverb(EffectChain * effectChain, bool stereo) {
     this->effectChain = effectChain;
     this->roomSize = 0.5;
     this->damping = 0.5;
+    /*
     this->lowPass = 0;
     this->highPass = 0;
+    */
 
-    this->doMainConnections();
-    
     // create effect
     this->effectLeft = new AudioEffectFreeverb();
-    AudioConnection * filteredToEffectLeft = new AudioConnection(*this->filteredLeft, 0, *this->effectLeft, 0);
-    filteredToEffectLeft->connect();
-    this->connections.add(filteredToEffectLeft);
-    
     if(this->stereo) {
       this->effectRight = new AudioEffectFreeverb();
-      AudioConnection * filteredToEffectRight = new AudioConnection(*this->filteredRight, 0, *this->effectRight, 0);
-      filteredToEffectRight->connect();
-      this->connections.add(filteredToEffectRight);
       
     }
 
+    this->doMainConnections();
+    
     this->setDamping();
     this->setRoomSize();
     this->setWet();
@@ -91,14 +86,6 @@ void EffectReverb::event(String command, float param){
       this->destroyScreen(); // solo quiero borrar la screen, el efecto me interesa quedarmelo
       this->effectChain->mainScreen();
   }
-  if (command == "highPass") {
-    this->highPass = param;
-    this->setHighPass();
-  }
-  if (command == "lowPass") {
-    this->lowPass = param;
-    this->setLowPass();
-  }
   if (command == "damping") {
     this->damping = param;
     this->setDamping();
@@ -107,10 +94,19 @@ void EffectReverb::event(String command, float param){
     this->roomSize = param;
     this->setRoomSize();
   }
+  /*
+  if (command == "highPass") {
+    this->highPass = param;
+    this->setHighPass();
+  }
+  if (command == "lowPass") {
+    this->lowPass = param;
+    this->setLowPass();
+  }
   if (command == "wet") {
     this->wet = param;
     this->setWet();
-  }
+  }*/
 }
 
 #endif
