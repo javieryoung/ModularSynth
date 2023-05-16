@@ -74,12 +74,6 @@ const int buttonPinRight = 17;
 Bounce buttonLeft = Bounce(buttonPinLeft, 10);
 Bounce buttonRight = Bounce(buttonPinRight, 10);
 
-#include <Audio.h>
-#include <Wire.h>
-#include <SPI.h>
-#include <SD.h>
-#include <SerialFlash.h>
-
 
 // TEENSY 3.2
 /*
@@ -123,7 +117,7 @@ SoloMaker * sm;
 EffectChain * effectChain;
 
 void setup() {
-  AudioMemory(32);
+  AudioMemory(256);
   
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.5);

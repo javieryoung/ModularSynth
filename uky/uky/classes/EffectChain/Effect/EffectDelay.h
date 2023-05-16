@@ -19,7 +19,6 @@ class EffectDelay : public EffectPreFiltered {
     float feedback, delayTime;
     AudioEffectDelay * delayRight;
     AudioEffectDelay * delayLeft;
-
     AudioMixer4 * effectLeft;
     AudioMixer4 * effectRight;
 

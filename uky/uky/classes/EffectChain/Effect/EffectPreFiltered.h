@@ -18,6 +18,7 @@ class EffectPreFiltered : public Effect
     AudioAmplifier * filteredLeft;
     AudioAmplifier * filteredRight;
 
+
 };
 
 EffectPreFiltered::EffectPreFiltered() {
@@ -38,6 +39,7 @@ void EffectPreFiltered::doMainConnections() {
 
     // LOW PASS
     this->lowPassLeft = new AudioFilterStateVariable();
+    this->lowPassLeft->octaveControl(0);
     this->lowPassLeft->resonance(0.7); // no resonance
 
     AudioConnection * leftInputToLowPass = new AudioConnection(*this->ampLeft, 0, *this->lowPassLeft, 0);
@@ -46,15 +48,16 @@ void EffectPreFiltered::doMainConnections() {
     
     // HIGH PASS
     this->highPassLeft = new AudioFilterStateVariable();
-    this->lowPassLeft->resonance(0.7); // no resonance
+    this->highPassLeft->octaveControl(0);
+    this->highPassLeft->resonance(0.7); // no resonance
 
     AudioConnection * lowPassToHighPass = new AudioConnection(*this->lowPassLeft, 0, *this->highPassLeft, 0);
     lowPassToHighPass->connect();
     this->connections.add(lowPassToHighPass);
-
-    AudioConnection * highPassToEffect = new AudioConnection(*this->highPassLeft, 2, *this->filteredLeft, 0);
-    highPassToEffect->connect();
-    this->connections.add(highPassToEffect);
+  
+    AudioConnection * highPassToFilteredAmp = new AudioConnection(*this->highPassLeft, 2, *this->filteredLeft, 0);
+    highPassToFilteredAmp->connect();
+    this->connections.add(highPassToFilteredAmp);
 
     this->dryWetLeft = new AudioMixer4();
     this->dryWetLeft->gain(2, 0);
@@ -64,9 +67,6 @@ void EffectPreFiltered::doMainConnections() {
     AudioConnection * leftDry = new AudioConnection(*this->ampLeft, 0, *this->dryWetLeft, 0);
     leftDry->connect();
     this->connections.add(leftDry);
-    AudioConnection * leftWet = new AudioConnection(*this->effectLeft, 0, *this->dryWetLeft, 1);
-    leftWet->connect();
-    this->connections.add(leftWet);
 
     if(this->stereo) {
       // this amp is just the input
@@ -105,9 +105,6 @@ void EffectPreFiltered::doMainConnections() {
       AudioConnection * rightDry = new AudioConnection(*this->ampRight, 0, *this->dryWetRight, 0);
       rightDry->connect();
       this->connections.add(rightDry);
-      AudioConnection * rightWet = new AudioConnection(*this->effectRight, 0, *this->dryWetRight, 1);
-      rightWet->connect();
-      this->connections.add(rightWet);
     }
 }
 

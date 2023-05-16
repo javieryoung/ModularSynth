@@ -7,9 +7,9 @@ EffectDelay::EffectDelay(EffectChain * effectChain, bool stereo) {
     this->stereo = stereo;
     this->wet = 100;
     this->effectChain = effectChain;
-    this->feedback = 0;
-    this->delayTime = 0;
-    this->lowPass = 0;
+    this->feedback = 0.5;
+    this->delayTime = 200;
+    this->lowPass = 10000;
     this->highPass = 0;
 
     this->effectLeft = new AudioMixer4(); // delay mixer
@@ -18,9 +18,8 @@ EffectDelay::EffectDelay(EffectChain * effectChain, bool stereo) {
     
     // create effect
     this->delayLeft = new AudioEffectDelay();
-    for (int i = 1; i <= 7; i ++) this->delayLeft->disable(i);
-    this->effectLeft->gain(0, 1-(this->feedback));
-    this->effectLeft->gain(1, this->feedback);
+    for (int i = 1; i <= 7; i ++) { this->delayLeft->disable(i); }
+    this->effectLeft->gain(0,1);
     this->effectLeft->gain(2,0);
     this->effectLeft->gain(3,0);
 
@@ -32,15 +31,17 @@ EffectDelay::EffectDelay(EffectChain * effectChain, bool stereo) {
     leftDelayMixerToDelay->connect();
     this->connections.add(leftDelayMixerToDelay);
 
-    AudioConnection * leftDelayToDelayMixer = new AudioConnection(*this->delayLeft, 0, * this->effectLeft, 0);
+    AudioConnection * leftDelayToDelayMixer = new AudioConnection(*this->delayLeft, 0, * this->effectLeft, 1);
     leftDelayToDelayMixer->connect();
     this->connections.add(leftDelayToDelayMixer);
+
+    AudioConnection * leftEffectToDryWet = new AudioConnection(*this->effectLeft, 0, * this->dryWetLeft, 1);
+    leftEffectToDryWet->connect();
+    this->connections.add(leftEffectToDryWet);
     
     if(this->stereo) {
       this->delayRight = new AudioEffectDelay();
       for (int i = 1; i <= 7; i ++) this->delayRight->disable(i);
-      this->effectRight->gain(0, 1-(this->feedback));
-      this->effectRight->gain(1, this->feedback);
       this->effectRight->gain(2,0);
       this->effectRight->gain(3,0);
 
@@ -52,16 +53,21 @@ EffectDelay::EffectDelay(EffectChain * effectChain, bool stereo) {
       rightDelayMixerToDelay->connect();
       this->connections.add(rightDelayMixerToDelay);
 
-      AudioConnection * rightDelayToDelayMixer = new AudioConnection(*this->delayRight, 0, * this->effectRight, 0);
+      AudioConnection * rightDelayToDelayMixer = new AudioConnection(*this->delayRight, 0, * this->effectRight, 1);
       rightDelayToDelayMixer->connect();
       this->connections.add(rightDelayToDelayMixer);
+
+      AudioConnection * rightEffectToDryWet = new AudioConnection(*this->effectRight, 0, * this->dryWetRight, 0);
+      rightEffectToDryWet->connect();
+      this->connections.add(rightEffectToDryWet);
 
       
     }
     this->setFeedback();
     this->setDelayTime();
     this->setWet();
-    
+    this->setLowPass();
+    this->setHighPass();
 }
 
 EffectDelay::~EffectDelay() {
@@ -86,7 +92,7 @@ void EffectDelay::mainScreen() {
     this->screen = new Screen(this);
 
     Input* k = new TwoKnobs(this->screen, 10, 40, 40, 40, 15);
-    k->setUpKnob("left", "feedback", "Feedback", 0, 100, this->feedback);
+    k->setUpKnob("left", "feedback", "Feedback", 0, 100, this->feedback*100);
     k->setUpKnob("right", "delayTime", "DelayTime", 0, 500, this->delayTime);
     this->screen->addInput(k);
 
@@ -106,11 +112,11 @@ void EffectDelay::mainScreen() {
 }
 
 void EffectDelay::setFeedback() {
-  this->effectLeft->gain(0, 1-(this->feedback));
   this->effectLeft->gain(1, this->feedback);  
+  
   if (this->stereo) {
-    this->effectLeft->gain(0, 1-(this->feedback));
-    this->effectLeft->gain(1, this->feedback);  
+    this->effectRight->gain(0, 1-(this->feedback));
+    this->effectRight->gain(1, this->feedback);  
   }
 }
 

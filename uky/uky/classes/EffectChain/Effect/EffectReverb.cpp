@@ -9,23 +9,44 @@ EffectReverb::EffectReverb(EffectChain * effectChain, bool stereo) {
     this->effectChain = effectChain;
     this->roomSize = 0.5;
     this->damping = 0.5;
-    /*
-    this->lowPass = 0;
+    this->lowPass = 10000;
     this->highPass = 0;
-    */
 
     // create effect
     this->effectLeft = new AudioEffectFreeverb();
+    
     if(this->stereo) {
       this->effectRight = new AudioEffectFreeverb();
-      
     }
 
     this->doMainConnections();
+
+    
+    AudioConnection * filteredToEffectLeft = new AudioConnection(*this->filteredLeft, 0, *this->effectLeft, 0);
+    filteredToEffectLeft->connect();
+    this->connections.add(filteredToEffectLeft);
+    
+    AudioConnection * leftWet = new AudioConnection(*this->effectLeft, 0, *this->dryWetLeft, 1);
+    leftWet->connect();
+    this->connections.add(leftWet);
+
+    if(this->stereo) {
+      AudioConnection * filteredToEffectRight = new AudioConnection(*this->filteredRight, 2, *this->effectRight, 0);
+      filteredToEffectRight->connect();
+      this->connections.add(filteredToEffectRight);
+    
+      AudioConnection * rightWet = new AudioConnection(*this->effectRight , 0, *this->dryWetRight , 1);
+      rightWet->connect();
+      this->connections.add(rightWet);
+      
+      
+    }
     
     this->setDamping();
     this->setRoomSize();
     this->setWet();
+    this->setLowPass();
+    this->setHighPass();
     
 }
 
@@ -94,7 +115,6 @@ void EffectReverb::event(String command, float param){
     this->roomSize = param;
     this->setRoomSize();
   }
-  /*
   if (command == "highPass") {
     this->highPass = param;
     this->setHighPass();
@@ -106,7 +126,7 @@ void EffectReverb::event(String command, float param){
   if (command == "wet") {
     this->wet = param;
     this->setWet();
-  }*/
+  }
 }
 
 #endif

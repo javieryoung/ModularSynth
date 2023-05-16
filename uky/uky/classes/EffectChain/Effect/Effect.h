@@ -18,8 +18,6 @@ class Effect : public Screenable
     void setWet();
 
     Screen* screen = NULL;
-    AudioStream * effectLeft;
-    AudioStream * effectRight;
     AudioStream * inputLeft;
     AudioStream * inputRight;
     AudioMixer4 * dryWetLeft; // OUTPUT

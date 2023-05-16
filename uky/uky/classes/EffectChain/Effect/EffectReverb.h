@@ -5,7 +5,7 @@ class EffectChain;
 
 #include "../../../externs.h"
 
-class EffectReverb : public Effect {
+class EffectReverb : public EffectPreFiltered {
   public:
     EffectReverb(EffectChain * chainList, bool stereo);
     ~EffectReverb();
@@ -17,7 +17,7 @@ class EffectReverb : public Effect {
     void setRoomSize();
     AudioEffectFreeverb * effectLeft;
     AudioEffectFreeverb * effectRight;
-
+    
   protected:
     float roomSize, damping;
 

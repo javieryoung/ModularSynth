@@ -17,10 +17,6 @@ void Effect::doMainConnections() {
     this->ampLeft->gain(1);
 
     
-    // conect input to effect
-    AudioConnection * leftInput = new AudioConnection(*this->ampLeft, 0, *this->effectLeft, 0);
-    leftInput->connect();
-    this->connections.add(leftInput);
 
     this->dryWetLeft = new AudioMixer4();
     this->dryWetLeft->gain(2, 0);
@@ -30,18 +26,10 @@ void Effect::doMainConnections() {
     AudioConnection * leftDry = new AudioConnection(*this->ampLeft, 0, *this->dryWetLeft, 0);
     leftDry->connect();
     this->connections.add(leftDry);
-    AudioConnection * leftWet = new AudioConnection(*this->effectLeft, 0, *this->dryWetLeft, 1);
-    leftWet->connect();
-    this->connections.add(leftWet);
-
     if(this->stereo) {
       this->ampRight = new AudioAmplifier();
       this->ampRight->gain(1);
 
-
-      AudioConnection * rightInput = new AudioConnection(*this->ampRight, 0, *this->effectRight, 0);
-      rightInput->connect();
-      this->connections.add(rightInput);
 
       this->dryWetRight = new AudioMixer4();
       this->dryWetRight->gain(2, 0);
@@ -50,9 +38,6 @@ void Effect::doMainConnections() {
       AudioConnection * rightDry = new AudioConnection(*this->ampRight, 0, *this->dryWetRight, 0);
       rightDry->connect();
       this->connections.add(rightDry);
-      AudioConnection * rightWet = new AudioConnection(*this->effectRight, 0, *this->dryWetRight, 1);
-      rightWet->connect();
-      this->connections.add(rightWet);
     }
 }
 String Effect::type() {
