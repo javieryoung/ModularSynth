@@ -45,11 +45,11 @@ String Effect::type() {
 }
 
 void Effect::setWet() {
-  this->dryWetLeft->gain(0, 1-(this->wet/100));
-  this->dryWetLeft->gain(1, (this->wet/100));
+  this->dryWetLeft->gain(0, 1-(this->wet));
+  this->dryWetLeft->gain(1, (this->wet));
   if (this->stereo) {
-    this->dryWetRight->gain(0, 1-(this->wet/100));
-    this->dryWetRight->gain(1, (this->wet/100));
+    this->dryWetRight->gain(0, 1-(this->wet));
+    this->dryWetRight->gain(1, (this->wet));
   }
 }
 

@@ -38,6 +38,8 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=902,271
 #include "functions.h"
 
 
+#include "extraEffects/effect_platervbstereo.h"
+#include "extraEffects/effect_platervbstereo.cpp"
 
 #include "classes/LinkedList.h"
 #include "classes/Screen/Screen.h"

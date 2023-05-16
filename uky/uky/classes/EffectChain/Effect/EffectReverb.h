@@ -5,7 +5,7 @@ class EffectChain;
 
 #include "../../../externs.h"
 
-class EffectReverb : public EffectPreFiltered {
+class EffectReverb : public Effect {
   public:
     EffectReverb(EffectChain * chainList, bool stereo);
     ~EffectReverb();
@@ -13,13 +13,17 @@ class EffectReverb : public EffectPreFiltered {
     void destroyScreen();
     void mainScreen() override;
     void event(String command, float param);
-    void setDamping();
-    void setRoomSize();
-    AudioEffectFreeverb * effectLeft;
-    AudioEffectFreeverb * effectRight;
+
+    void setSize();
+    void setLowPass();
+    void setLodamp();
+    void setHidamp();
+    void setDiffusion();
+
+    AudioEffectPlateReverb * effectLeft;
     
   protected:
-    float roomSize, damping;
+    float size, lowpass, lodamp, hidamp, diffusion;
 
 };
 
