@@ -5,11 +5,11 @@
 
 EffectReverb::EffectReverb(EffectChain * effectChain, bool stereo) {
     this->stereo = stereo;
-    this->wet = 100;
+    this->wet = 1;
     this->effectChain = effectChain;
     this->size = 0.5;
     this->lowpass = 0.5;
-    this->hidamp = 10000;
+    this->hidamp = 0;
     this->lodamp = 0;
 
     // ATENCION
@@ -20,11 +20,11 @@ EffectReverb::EffectReverb(EffectChain * effectChain, bool stereo) {
     this->doMainConnections();
 
     
-    AudioConnection * filteredToEffectLeft = new AudioConnection(*this->inputLeft, 0, *this->effectLeft, 0);
+    AudioConnection * filteredToEffectLeft = new AudioConnection(*this->ampLeft, 0, *this->effectLeft, 0);
     filteredToEffectLeft->connect();
     this->connections.add(filteredToEffectLeft);
     if (!this->stereo) { // the effect has to have two inputs si o si
-      AudioConnection * filteredToEffectLeftButRight = new AudioConnection(*this->inputLeft, 0, *this->effectLeft, 1);
+      AudioConnection * filteredToEffectLeftButRight = new AudioConnection(*this->ampLeft, 0, *this->effectLeft, 1);
       filteredToEffectLeftButRight->connect();
       this->connections.add(filteredToEffectLeftButRight);
     }
@@ -84,17 +84,17 @@ void EffectReverb::mainScreen() {
 
     Input* k = new TwoKnobs(this->screen, 10, 40, 40, 40, 15);
     k->setUpKnob("left", "size", "Size", 0, 100, this->size);
-    k->setUpKnob("right", "lowpass", "LowPass", 0, 100, this->lowpass);
+    k->setUpKnob("right", "lowpass", "LowPass", 0, 100, this->lowpass*100);
     this->screen->addInput(k);
 
     Input* k2 = new TwoKnobs(this->screen, 180, 40, 40, 40, 15);
-    k2->setUpKnob("left", "lodamp", "LoDamp", 0, 100, this->lodamp);      // start with no filter
-    k2->setUpKnob("right", "hidamp", "HiDamp", 0, 100, this->hidamp);  // start with no filter
+    k2->setUpKnob("left", "lodamp", "LoDamp", 0, 100, this->lodamp*100);      // start with no filter
+    k2->setUpKnob("right", "hidamp", "HiDamp", 0, 100, this->hidamp*100);  // start with no filter
     this->screen->addInput(k2);
 
     Input* k3 = new TwoKnobs(this->screen, 10, 150, 40, 40, 15);
     k3->setUpKnob("left", "diffusion", "Diffusion", 0, 100, 0);
-    k3->setUpKnob("right", "wet", "Dry/Wet", 0, 100, this->wet);
+    k3->setUpKnob("right", "wet", "Dry/Wet", 0, 100, this->wet*100);
     this->screen->addInput(k3);
 
     this->screen->draw();

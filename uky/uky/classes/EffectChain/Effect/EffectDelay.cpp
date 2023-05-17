@@ -5,7 +5,7 @@
 
 EffectDelay::EffectDelay(EffectChain * effectChain, bool stereo) {
     this->stereo = stereo;
-    this->wet = 100;
+    this->wet = 1;
     this->effectChain = effectChain;
     this->feedback = 0.5;
     this->delayTime = 200;
@@ -102,7 +102,7 @@ void EffectDelay::mainScreen() {
     this->screen->addInput(k2);
 
     Input* k3 = new TwoKnobs(this->screen, 10, 150, 40, 40, 15);
-    k3->setUpKnob("left", "wet", "Dry/Wet", 0, 100, this->wet);
+    k3->setUpKnob("left", "wet", "Dry/Wet", 0, 100, this->wet*100);
     k3->setUpKnob("right", "idk", "Idk", 0, 100, 0);
     this->screen->addInput(k3);
 
@@ -148,7 +148,7 @@ void EffectDelay::event(String command, float param){
     this->setDelayTime();
   }
   if (command == "wet") {
-    this->wet = param;
+    this->wet = param/100;
     this->setWet();
   }
 }
