@@ -12,7 +12,7 @@ EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
     this->amplitude = 0;
 
     this->effectLeft = new AudioEffectWaveshaper(); 
-    this->effectRight = new AudioEffectWaveshaper(); 
+    if(this->stereo) this->effectRight = new AudioEffectWaveshaper(); 
     
     this->doMainConnections();
 
@@ -35,10 +35,6 @@ EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
       this->connections.add(rightWet);
       
     }
-    
-    this->setAngle();
-    this->setLength();
-    this->setAmplitude();
     this->setWet();
     
 }
@@ -81,27 +77,35 @@ void EffectWaveshaper::mainScreen() {
 }
 
 void EffectWaveshaper::reloadWaveshape() {
-    void shape[257];
+    Serial.println("A");
+    float shape[257] = {};
     float minValue = 10000;
     float maxValue = -10000;
+    Serial.println("B");
     for (int i = 0; i < 257; i++) {
-        float x = i * 1/128 - 1; // va de -1 a 1
+        float x = (i*1.00)/128 - 1; // va de -1 a 1
         // f(x) = sin(ax) bx + cx
         shape[i] = sin(this->length * x * PI) * this->amplitude * x + this->angle * x;
         if (shape[i] > maxValue) maxValue = shape[i];
         if (shape[i] < minValue) minValue = shape[i];
+        Serial.println(shape[i]);
     }
+    Serial.println("C");
+    /*
     this->effectLeft->shape(shape, 257);
     if (this->stereo) this->effectRight->shape(shape, 257);
-
+    */
+    Serial.println("D");
     // DIBUJAR WAVESHAPE 
     // va desde (40, 100) a (297, 250), o sea de 257x150
     float range = maxValue - minValue;
     tft.fillRect(40, 100, 257, 150, BLACK);
+    Serial.println("F");
     for (int x = 0; x < 257; x++) {
         float y = (shape[x] / range) * 150;
         tft.drawPixel(x + 40, 100 + 150 - y, PRIMARY);
     }
+    Serial.println("G");
     
 }
 

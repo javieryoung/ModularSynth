@@ -55,11 +55,13 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=902,271
 #include "classes/EffectChain/EffectChain.h"
 #include "classes/EffectChain/Effect/EffectReverb.h"
 #include "classes/EffectChain/Effect/EffectDelay.h"
+#include "classes/EffectChain/Effect/EffectWaveshaper.h"
 
 #include "classes/EffectChain/Effect/Effect.cpp"
 #include "classes/EffectChain/EffectChain.cpp"
 #include "classes/EffectChain/Effect/EffectReverb.cpp"
 #include "classes/EffectChain/Effect/EffectDelay.cpp"
+#include "classes/EffectChain/Effect/EffectWaveshaper.cpp"
 
 #include "classes/Modular/Modular.h"
 #include "classes/SoloMaker/SoloMaker.h"
