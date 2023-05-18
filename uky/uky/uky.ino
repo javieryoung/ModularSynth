@@ -121,7 +121,7 @@ SoloMaker * sm;
 EffectChain * effectChain;
 
 void setup() {
-  AudioMemory(512);
+  AudioMemory(256);
   
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.5);
