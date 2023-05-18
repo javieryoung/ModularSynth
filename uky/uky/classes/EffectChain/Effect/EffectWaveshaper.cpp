@@ -114,7 +114,7 @@ void EffectWaveshaper::reloadWaveshape() {
     Serial.println("F");
     for (int x = 0; x < 257; x++) {
         float y = (shape[x] / range) * height;
-        tft.drawPixel(x + 40, 100 + (height/2) - y, PRIMARY);
+        tft.drawPixel(x + 40, 100 + (height/2) - y*(height/2), PRIMARY);
     }
     Serial.println("G");
     
