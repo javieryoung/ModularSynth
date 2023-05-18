@@ -90,20 +90,29 @@ void EffectWaveshaper::reloadWaveshape() {
         if (shape[i] < minValue) minValue = shape[i];
         Serial.println(shape[i]);
     }
+    // NORMALIZE
+    for (int i = 0; i < 257; i++) {
+        if (minValue < 0 && -minValue > maxValue)
+            shape[i] = shape[i]/(-minValue);
+        else
+            shape[i] = shape[i]/maxValue;
+    }       
     Serial.println("C");
     /*
     this->effectLeft->shape(shape, 257);
     if (this->stereo) this->effectRight->shape(shape, 257);
     */
     Serial.println("D");
-    // DIBUJAR WAVESHAPE 
+    // DIBUJAR WAVESHAPE
+
     // va desde (40, 100) a (297, 250), o sea de 257x150
     float range = maxValue - minValue;
-    tft.fillRect(40, 100, 257, 150, BLACK);
+    int height = 150;
+    tft.fillRect(40, 100, 257, height, BLACK);
     Serial.println("F");
     for (int x = 0; x < 257; x++) {
-        float y = (shape[x] / range) * 150;
-        tft.drawPixel(x + 40, 100 + 150 - y, PRIMARY);
+        float y = (shape[x] / range) * height;
+        tft.drawPixel(x + 40, 100 + (height/2) - y, PRIMARY);
     }
     Serial.println("G");
     
