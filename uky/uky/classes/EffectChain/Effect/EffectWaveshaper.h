@@ -5,7 +5,7 @@ class EffectChain;
 
 #include "../../../externs.h"
 
-class EffectWaveshaper : public Effect {
+class EffectWaveshaper : public EffectPreFiltered {
   public:
     EffectWaveshaper(EffectChain * chainList, bool stereo);
     ~EffectWaveshaper();
