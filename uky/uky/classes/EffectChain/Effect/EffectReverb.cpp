@@ -72,13 +72,6 @@ void EffectReverb::destroyScreen() {
 }
 
 
-
-    void setSize();
-    void sethidamp();
-    void setLodamp();
-    void setHidamp();
-    void setDiffusion();
-
 void EffectReverb::mainScreen() {
     this->screen = new Screen(this);
 

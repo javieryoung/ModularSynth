@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 
-const String availableEffects[] = {"Reverb", "Delay"};
+const String availableEffects[] = {"Reverb", "Delay", "Waveshaper"};
 
 class EffectChain : public Screenable
 {

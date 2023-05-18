@@ -159,6 +159,13 @@ void EffectChain::event(String command, float param){
                     this->editEffect(this->effects.size()-1);
 
                 }
+                if (param == 2) {
+                    // WAVESHAPER
+                    Effect * e = new EffectWaveshaper(this, this->stereo);
+                    this->addEffect(e);
+                    this->editEffect(this->effects.size()-1);
+
+                }
             }
         }
     }
