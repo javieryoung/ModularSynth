@@ -72,7 +72,7 @@ void EffectWaveshaper::mainScreen() {
 
     Input* k = new TwoKnobs(this->screen, 10, 40, 40, 40, 15);
     k->setUpKnob("left", "angle", "Angle", 0, 3, this->angle);
-    k->setUpKnob("right", "amplitude", "Amplitude", 1, 3, 0);
+    k->setUpKnob("right", "amplitude", "Amplitude", 0, 1, 0);
     this->screen->addInput(k);
 
     Input* k3 = new TwoKnobs(this->screen, 180, 40, 40, 40, 15);
@@ -98,10 +98,10 @@ void EffectWaveshaper::reloadWaveshape() {
         Serial.print("f(");
         Serial.print(x);
         Serial.print(") = ");
-        float y = pow(x,3);
+        float y = pow(x,this->amplitude);
         Serial.println(y);
         
-        // shape[i] = y;
+        shape[i] = y;
     }
     Serial.println("C");
     
