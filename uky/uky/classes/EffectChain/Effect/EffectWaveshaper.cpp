@@ -3,6 +3,10 @@
 
 #include "../../../externs.h"
 
+AudioEffectWaveshaper waveshaper;
+
+
+
 EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
     this->stereo = stereo;
     this->wet = 1;
@@ -10,10 +14,12 @@ EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
     // Default: sinwave
     this->angle = 1;
     this->length = 1;
-    this->lowPass = 10000;
+    this->amplitude = 1;
+    this->lowPass = 20000;
     this->highPass = 0;
 
-    this->effectLeft = new AudioEffectWaveshaper(); 
+    //this->effectLeft = new AudioEffectWaveshaper(); 
+    this->effectLeft = &waveshaper; 
     if(this->stereo) this->effectRight = new AudioEffectWaveshaper(); 
     
     this->doMainConnections();
@@ -66,7 +72,7 @@ void EffectWaveshaper::mainScreen() {
 
     Input* k = new TwoKnobs(this->screen, 10, 40, 40, 40, 15);
     k->setUpKnob("left", "angle", "Angle", 0, 3, this->angle);
-    k->setUpKnob("right", "idk", "Idk", 0, 3, 0);
+    k->setUpKnob("right", "amplitude", "Amplitude", 1, 3, 0);
     this->screen->addInput(k);
 
     Input* k3 = new TwoKnobs(this->screen, 180, 40, 40, 40, 15);
@@ -81,35 +87,31 @@ void EffectWaveshaper::mainScreen() {
 
 void EffectWaveshaper::reloadWaveshape() {
     Serial.println("A");
-    int length = 258;
-    float shape[length] = {};
-    float minValue = 10000;
-    float maxValue = -10000;
+    float shape[] = {
+      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    };
+    int length = sizeof(shape)/sizeof(shape[0]);
     Serial.println("B");
     for (int i = 0; i < length; i++) {
-        float x = (i*1.00)/128 - 1; // va de -1 a 1
-        // f(x) = sin(ax PI) + cx
-        shape[i] = sin(this->length * x * PI) + this->angle * x;
-        if (shape[i] > maxValue) maxValue = shape[i];
-        if (shape[i] < minValue) minValue = shape[i];
-    }
-    // NORMALIZE
-    for (int i = 0; i < length; i++) {
-        if (minValue < 0 && -minValue > maxValue)
-            shape[i] = shape[i]/(-minValue);
-        else
-            shape[i] = shape[i]/maxValue;
+        float x = (i*1.00)/(length/2) - 1; // va de -1 a 1
+        // f(x) = sin(ax PI) bx + cx
+        Serial.print("f(");
+        Serial.print(x);
+        Serial.print(") = ");
+        float y = pow(x,this->amplitude);
+        Serial.println(y);
         
-        Serial.println(shape[i]);
-    }       
+        shape[i] = y;
+    }
     Serial.println("C");
     
-    this->effectLeft->shape((float *)shape, length);
+    
+    this->effectLeft->shape(shape, sizeof(shape)/sizeof(shape[0]));
+    // this->effectLeft->shape((float *)shape, length);
     if (this->stereo) this->effectRight->shape((float *)shape, length);
     
     Serial.println("D");
     // DIBUJAR WAVESHAPE
-
     // va desde (40, 100) a (297, 250), o sea de 257x150
     int height = 80;
     tft.fillRect(40, 120, length, height, BLACK);
@@ -133,6 +135,10 @@ void EffectWaveshaper::event(String command, float param){
   }
   if (command == "length") {
     this->length = param;
+    this->reloadWaveshape();
+  }
+  if (command == "amplitude") {
+    this->amplitude = param;
     this->reloadWaveshape();
   }
   if (command == "wet") {

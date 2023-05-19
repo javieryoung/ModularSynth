@@ -18,8 +18,9 @@ class EffectWaveshaper : public EffectPreFiltered {
     AudioEffectWaveshaper * effectRight;
     
   protected:
-    // f(x) = sin(ax PI) + cx
+    // f(x) = sin(ax PI) bx + cx
     float length;     // a
+    float amplitude;     // b
     float angle;      // c
 
 };
