@@ -127,7 +127,7 @@ void EffectChain::event(String command, float param){
 
     if (this->showing == "mainScreen") {
         
-        if (command == "clicked" && param == 0) { // click sobre izquierdo
+        if (command == "clicked" && param == 0 && this->parent != NULL) { // click sobre izquierdo
             this->destroyScreen();
             this->parent->mainScreen();
         }

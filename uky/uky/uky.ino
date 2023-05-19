@@ -148,6 +148,15 @@ void setup() {
   ts.setRotation(3);
   outputLeft.gain(1);
   outputRight.gain(1);
+  
+  
+  /*
+  EffectChain * effectChain = new EffectChain(false, NULL);
+  effectChain->setInputLeft(&inputLeft);
+  effectChain->setOutputLeft(&outputLeft);
+  effectChain->connect();
+  effectChain->mainScreen();
+  */
   sm = new SoloMaker(&outputLeft);
   sm->mainScreen();
   playNote(currentNote);

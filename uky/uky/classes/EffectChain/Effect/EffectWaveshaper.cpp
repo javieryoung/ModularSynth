@@ -88,7 +88,7 @@ void EffectWaveshaper::mainScreen() {
 void EffectWaveshaper::reloadWaveshape() {
     Serial.println("A");
     float shape[] = {
-      0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+      -0.588,-0.579,-0.549,-0.488,-0.396,-0.320,-0.228,-0.122,0,0.122,0.228,0.320,0.396,0.488,0.549,0.579,0.588,-0.588,-0.579,0.549,0.488,-0.396,-0.320,0.228,0.122,-0.122,-0.228,0.320,0.396,-0.488,-0.549,0.579,0.588,-0.9, 0.9,-0.9, 0.9,-0.9, 0.9,-0.9, 0.9, 0.9,-0.9, 0.9,-0.9, 0.9,-0.9, 0.9,-0.9,0.228,0.122,-0.122,-0.228,0.320,0.396,-0.488,-0.549,0.579,0.588,-0.9, 0.9,-0.9, 0.9,-0.9, 0.9,
     };
     int length = sizeof(shape)/sizeof(shape[0]);
     Serial.println("B");
@@ -98,10 +98,10 @@ void EffectWaveshaper::reloadWaveshape() {
         Serial.print("f(");
         Serial.print(x);
         Serial.print(") = ");
-        float y = pow(x,this->amplitude);
+        float y = pow(x,3);
         Serial.println(y);
         
-        shape[i] = y;
+        // shape[i] = y;
     }
     Serial.println("C");
     
