@@ -3,9 +3,6 @@
 
 #include "../../../externs.h"
 
-AudioEffectWaveshaper waveshaper;
-
-
 
 EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
     this->stereo = stereo;
@@ -19,7 +16,7 @@ EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
     this->highPass = 0;
 
     //this->effectLeft = new AudioEffectWaveshaper(); 
-    this->effectLeft = &waveshaper; 
+    this->effectLeft = new AudioEffectWaveshaper();
     if(this->stereo) this->effectRight = new AudioEffectWaveshaper(); 
     
     this->doMainConnections();
@@ -44,6 +41,8 @@ EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
       
     }
     this->setWet();
+    this->setLowPass();
+    this->setHighPass();
     
     this->reloadWaveshape();
 }
