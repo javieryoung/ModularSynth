@@ -12,11 +12,10 @@ EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
     this->angle = 1;
     this->length = 1;
     this->amplitude = 1;
-    this->lowPass = 20000;
+    this->lowPass = 10000;
     this->highPass = 0;
 
-    //this->effectLeft = new AudioEffectWaveshaper(); 
-    this->effectLeft = new AudioEffectWaveshaper();
+    this->effectLeft = &waveshaper; 
     if(this->stereo) this->effectRight = new AudioEffectWaveshaper(); 
     
     this->doMainConnections();
@@ -43,7 +42,7 @@ EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
     this->setWet();
     this->setLowPass();
     this->setHighPass();
-    
+
     this->reloadWaveshape();
 }
 
@@ -71,7 +70,7 @@ void EffectWaveshaper::mainScreen() {
 
     Input* k = new TwoKnobs(this->screen, 10, 40, 40, 40, 15);
     k->setUpKnob("left", "angle", "Angle", 0, 3, this->angle);
-    k->setUpKnob("right", "amplitude", "Amplitude", 0, 1, 0);
+    k->setUpKnob("right", "amplitude", "Amplitude", 1, 3, this->amplitude);
     this->screen->addInput(k);
 
     Input* k3 = new TwoKnobs(this->screen, 180, 40, 40, 40, 15);
@@ -86,10 +85,8 @@ void EffectWaveshaper::mainScreen() {
 
 void EffectWaveshaper::reloadWaveshape() {
     Serial.println("A");
-    float shape[] = {
-      -0.588,-0.579,-0.549,-0.488,-0.396,-0.320,-0.228,-0.122,0,0.122,0.228,0.320,0.396,0.488,0.549,0.579,0.588,-0.588,-0.579,0.549,0.488,-0.396,-0.320,0.228,0.122,-0.122,-0.228,0.320,0.396,-0.488,-0.549,0.579,0.588,-0.9, 0.9,-0.9, 0.9,-0.9, 0.9,-0.9, 0.9, 0.9,-0.9, 0.9,-0.9, 0.9,-0.9, 0.9,-0.9,0.228,0.122,-0.122,-0.228,0.320,0.396,-0.488,-0.549,0.579,0.588,-0.9, 0.9,-0.9, 0.9,-0.9, 0.9,
-    };
-    int length = sizeof(shape)/sizeof(shape[0]);
+    int length = 257;
+    float shape[length] = {};
     Serial.println("B");
     for (int i = 0; i < length; i++) {
         float x = (i*1.00)/(length/2) - 1; // va de -1 a 1
@@ -97,16 +94,14 @@ void EffectWaveshaper::reloadWaveshape() {
         Serial.print("f(");
         Serial.print(x);
         Serial.print(") = ");
-        float y = pow(x,this->amplitude);
+        float y = pow(x, this->amplitude);
         Serial.println(y);
         
         shape[i] = y;
     }
     Serial.println("C");
     
-    
-    this->effectLeft->shape(shape, sizeof(shape)/sizeof(shape[0]));
-    // this->effectLeft->shape((float *)shape, length);
+    this->effectLeft->shape((float *)shape, length);
     if (this->stereo) this->effectRight->shape((float *)shape, length);
     
     Serial.println("D");
