@@ -22,13 +22,9 @@ SoloMaker::SoloMaker(AudioStream * output) {
     this->modular = new Modular(this->modularOutput);
     this->modular->connect();
 
-    AudioSynthWaveform * waveform = new AudioSynthWaveform();
-    waveform->begin(1.0, 200.0, WAVEFORM_SINE);
-
 
     this->effectChain = new EffectChain(false, this);
-    // this->effectChain->setInputLeft(this->modular->output);
-    this->effectChain->setInputLeft(waveform);
+    this->effectChain->setInputLeft(this->modular->output);
     this->effectChain->setOutputLeft(output);
     this->effectChain->connect();
 
