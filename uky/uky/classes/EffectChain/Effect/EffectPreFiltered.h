@@ -39,7 +39,6 @@ void EffectPreFiltered::doMainConnections() {
 
     // LOW PASS
     this->lowPassLeft = new AudioFilterStateVariable();
-    this->lowPassLeft->octaveControl(0);
     this->lowPassLeft->resonance(0.7); // no resonance
 
     AudioConnection * leftInputToLowPass = new AudioConnection(*this->ampLeft, 0, *this->lowPassLeft, 0);
@@ -48,7 +47,6 @@ void EffectPreFiltered::doMainConnections() {
     
     // HIGH PASS
     this->highPassLeft = new AudioFilterStateVariable();
-    this->highPassLeft->octaveControl(0);
     this->highPassLeft->resonance(0.7); // no resonance
 
     AudioConnection * lowPassToHighPass = new AudioConnection(*this->lowPassLeft, 0, *this->highPassLeft, 0);

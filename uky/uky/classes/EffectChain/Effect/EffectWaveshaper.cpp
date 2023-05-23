@@ -30,7 +30,7 @@ EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
     this->connections.add(leftWet);
 
     if(this->stereo) {
-      AudioConnection * rightInputToDelayMixer = new AudioConnection(*this->filteredLeft, 0, * this->effectLeft, 0);
+      AudioConnection * rightInputToDelayMixer = new AudioConnection(*this->filteredRight, 0, * this->effectRight, 0);
       rightInputToDelayMixer->connect();
       this->connections.add(rightInputToDelayMixer);
     
@@ -69,7 +69,7 @@ void EffectWaveshaper::mainScreen() {
     this->screen = new Screen(this);
 
     Input* k = new TwoKnobs(this->screen, 10, 40, 40, 40, 15);
-    k->setUpKnob("left", "angle", "Angle", 0, 3, this->angle);
+    k->setUpKnob("left", "angle", "Angle", 1, 3, this->angle);
     k->setUpKnob("right", "amplitude", "Amplitude", 1, 3, this->amplitude);
     this->screen->addInput(k);
 
@@ -94,7 +94,7 @@ void EffectWaveshaper::reloadWaveshape() {
         Serial.print("f(");
         Serial.print(x);
         Serial.print(") = ");
-        float y = pow(x, this->amplitude);
+        float y = pow(x, this->angle);
         Serial.println(y);
         
         shape[i] = y;
