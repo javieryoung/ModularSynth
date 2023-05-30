@@ -3,6 +3,8 @@
 
 #include "../../../externs.h"
 
+AudioEffectWaveshaper waveshaper;
+
 
 EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
     this->stereo = stereo;
@@ -94,7 +96,7 @@ void EffectWaveshaper::reloadWaveshape() {
         Serial.print("f(");
         Serial.print(x);
         Serial.print(") = ");
-        float y = pow(x, this->angle);
+        float y = pow(x, 1/this->angle);
         Serial.println(y);
         
         shape[i] = y;
