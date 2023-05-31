@@ -102,16 +102,16 @@ void EffectWaveshaper::reloadWaveshape() {
     // DIBUJAR WAVESHAPE
     // va desde (40, 100) a (297, 250), o sea de 257x150
     int width = 200;
-    int height = 80; // promediamos cada punto en 3 para poder dibujar barritas
-    tft.fillRect(40, 120, width, height, BLACK);
-    for (int x = 0; x < length; x+=3) {
-      float avgY = (shape[x] + shape[x+1] + shape[x+2]) / 3;
+    int height = 150; // promediamos cada punto en 3 para poder dibujar barritas
+    tft.fillRect(20, 120, width, height, BLACK);
+    for (int x = 0; x < length; x+=8) {
+      float avgY = (shape[x] + shape[x+1] + shape[x+2]) / 8;
       float y = avgY * (height/2);
-      tft.fillRect(x+40, 120 + (height/2) - y, 3, 2, PRIMARY); // tope de la barrita
-      if (avgY > 0) 
-        tft.fillRect(x+40, 120 + (height/2) - y, 3, y, PRIMARY_0); // relleno de la barrita
+      if (y > 0) 
+        tft.fillRect(x+20, 120 + (height/2) - y, 8, y, PRIMARY_0); // relleno de la barrita
       else
-        tft.fillRect(x+40, 120 + height/2, 3, y, PRIMARY_0); // relleno de la barrita
+        tft.fillRect(x+20, 120 + height/2, 8, -y, PRIMARY_0); // relleno de la barrita
+      tft.fillRect(x+20, 120 + (height/2) - y, 8, 2, PRIMARY); // tope de la barrita
     }
     
 }
