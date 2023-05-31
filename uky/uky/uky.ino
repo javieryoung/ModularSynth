@@ -1,5 +1,10 @@
-#define PRIMARY 0xFFFF
-#define BLACK 0x0000
+#define BLACK 0x2128
+#define PRIMARY 0xFFBD
+#define PRIMARY_0 0xF695
+#define SECONDARY 0xC4F4
+#define SECONDARY_0 0x8B73
+#define DARK 0x4A6F
+
 #define SCREEN_WIDTH 320
 #define TEXT_HEIGHT 14
 

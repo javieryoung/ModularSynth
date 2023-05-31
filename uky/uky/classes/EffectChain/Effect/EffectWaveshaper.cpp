@@ -86,37 +86,33 @@ void EffectWaveshaper::mainScreen() {
 }
 
 void EffectWaveshaper::reloadWaveshape() {
-    Serial.println("A");
     int length = 257;
     float shape[length] = {};
-    Serial.println("B");
     for (int i = 0; i < length; i++) {
         float x = (i*1.00)/(length/2) - 1; // va de -1 a 1
         // f(x) = sin(ax PI) bx + cx
-        Serial.print("f(");
-        Serial.print(x);
-        Serial.print(") = ");
         float y = pow(x, 1/this->angle);
-        Serial.println(y);
         
         shape[i] = y;
     }
-    Serial.println("C");
     
     this->effectLeft->shape((float *)shape, length);
     if (this->stereo) this->effectRight->shape((float *)shape, length);
     
-    Serial.println("D");
     // DIBUJAR WAVESHAPE
     // va desde (40, 100) a (297, 250), o sea de 257x150
-    int height = 80;
-    tft.fillRect(40, 120, length, height, BLACK);
-    Serial.println("F");
-    for (int x = 0; x < length; x++) {
-        float y = shape[x] * (height/2);
-        tft.drawPixel(x + 40, 120 + (height/2) - y, PRIMARY);
+    int width = 200;
+    int height = 80; // promediamos cada punto en 3 para poder dibujar barritas
+    tft.fillRect(40, 120, width, height, BLACK);
+    for (int x = 0; x < length; x+=3) {
+      float avgY = (shape[x] + shape[x+1] + shape[x+2]) / 3;
+      float y = avgY * (height/2);
+      tft.fillRect(x+40, 120 + (height/2) - y, 3, 2, PRIMARY); // tope de la barrita
+      if (avgY > 0) 
+        tft.fillRect(x+40, 120 + (height/2) - y, 3, y, PRIMARY_0); // relleno de la barrita
+      else
+        tft.fillRect(x+40, 120 + height/2, 3, y, PRIMARY_0); // relleno de la barrita
     }
-    Serial.println("G");
     
 }
 
