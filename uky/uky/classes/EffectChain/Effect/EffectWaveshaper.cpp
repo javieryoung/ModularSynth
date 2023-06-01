@@ -7,7 +7,6 @@ EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
     this->stereo = stereo;
     this->wet = 1;
     this->effectChain = effectChain;
-    // Default: sinwave
     this->angle = 1;
     this->length = 1;
     this->amplitude = 1;
@@ -78,6 +77,9 @@ void EffectWaveshaper::mainScreen() {
     k3->setUpKnob("right", "wet", "Dry/Wet", 0, 100, this->wet*100);
     this->screen->addInput(k3);
 
+    Input* touchArea = new TouchArea(this->screen, "waveshape", this->touchAreaX, this->touchAreaY, this->touchAreaWidth, this->touchAreaHeight, "WaveShape");
+    this->screen->addInput(touchArea);
+
     this->screen->draw();
 
     currentScreen = this->screen;
@@ -88,8 +90,7 @@ void EffectWaveshaper::reloadWaveshape() {
     float shape[length] = {};
     for (int i = 0; i < length; i++) {
         float x = (i*1.00)/(length/2) - 1; // va de -1 a 1
-        float y = pow(x, 1/this->angle);
-        
+        float y = pow(x, 1/3);
         shape[i] = y;
     }
     
@@ -108,7 +109,7 @@ void EffectWaveshaper::reloadWaveshape() {
     tft.fillRect(startX, startY, width, height, BLACK);
     for (float x = 0; x < length; x+=valuesPerBar) {
       float avgY = 0;
-      for (int x1 = x; x1 < valuesPerBar; x1+=1) avgY += shape[x1];
+      for (int x1 = x; x1 < valuesPerBar; x1++) avgY += shape[x1];
       avgY = avgY / valuesPerBar;
 
       float y = avgY * (height/2);
@@ -140,6 +141,15 @@ void EffectWaveshaper::event(String command, float param){
   if (command == "wet") {
     this->wet = param/100;
     this->setWet();
+  }
+  if (command == "waveshape") {
+    int x = param / 10000;
+    int y  = param - (x * 10000);
+    Serial.print("X: ");
+    Serial.print(x);
+    Serial.print("Y: ");
+    Serial.println(y);
+
   }
 }
 
