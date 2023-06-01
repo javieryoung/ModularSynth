@@ -53,6 +53,7 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=902,271
 #include "classes/Screen/Input/Menu.h"
 #include "classes/Screen/Input/TwoKnobs.h"
 #include "classes/Screen/Input/Button.h"
+#include "classes/Screen/Input/TouchArea.h"
 
 #include "classes/EffectChain/Effect/Effect.h"
 #include "classes/EffectChain/Effect/EffectPreFiltered.h"

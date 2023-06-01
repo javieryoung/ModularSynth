@@ -3,9 +3,6 @@
 
 #include "../../../externs.h"
 
-AudioEffectWaveshaper waveshaper;
-
-
 EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
     this->stereo = stereo;
     this->wet = 1;
@@ -17,7 +14,8 @@ EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
     this->lowPass = 10000;
     this->highPass = 0;
 
-    this->effectLeft = &waveshaper; 
+
+    this->effectLeft = new AudioEffectWaveshaper();
     if(this->stereo) this->effectRight = new AudioEffectWaveshaper(); 
     
     this->doMainConnections();
@@ -90,7 +88,6 @@ void EffectWaveshaper::reloadWaveshape() {
     float shape[length] = {};
     for (int i = 0; i < length; i++) {
         float x = (i*1.00)/(length/2) - 1; // va de -1 a 1
-        // f(x) = sin(ax PI) bx + cx
         float y = pow(x, 1/this->angle);
         
         shape[i] = y;
@@ -101,19 +98,26 @@ void EffectWaveshaper::reloadWaveshape() {
     
     // DIBUJAR WAVESHAPE
     // va desde (40, 100) a (297, 250), o sea de 257x150
-    int width = 200;
-    int height = 150; // promediamos cada punto en 3 para poder dibujar barritas
-    tft.fillRect(20, 120, width, height, BLACK);
-    for (int x = 0; x < length; x+=8) {
-      float avgY = (shape[x] + shape[x+1] + shape[x+2]) / 8;
+    int width = this->touchAreaWidth;
+    int height = this->touchAreaHeight; // promediamos cada punto en 3 para poder dibujar barritas
+    int startX = this->touchAreaX;
+    int startY = this->touchAreaY;
+    int bars = 100;
+    float barWidth = width/bars;
+    float valuesPerBar = length / bars;
+    tft.fillRect(startX, startY, width, height, BLACK);
+    for (float x = 0; x < length; x+=valuesPerBar) {
+      float avgY = 0;
+      for (int x1 = x; x1 < valuesPerBar; x1+=1) avgY += shape[x1];
+      avgY = avgY / valuesPerBar;
+
       float y = avgY * (height/2);
       if (y > 0) 
-        tft.fillRect(x+20, 120 + (height/2) - y, 8, y, PRIMARY_0); // relleno de la barrita
+        tft.fillRect(x+startX, startY + (height/2) - y, barWidth, y, PRIMARY_0); // relleno de la barrita
       else
-        tft.fillRect(x+20, 120 + height/2, 8, -y, PRIMARY_0); // relleno de la barrita
-      tft.fillRect(x+20, 120 + (height/2) - y, 8, 2, PRIMARY); // tope de la barrita
+        tft.fillRect(x+startX, startY + height/2, barWidth, -y, PRIMARY_0); // relleno de la barrita
+      tft.fillRect(x+startX, startY + (height/2) - y, barWidth, 2, PRIMARY); // tope de la barrita
     }
-    
 }
 
 void EffectWaveshaper::event(String command, float param){

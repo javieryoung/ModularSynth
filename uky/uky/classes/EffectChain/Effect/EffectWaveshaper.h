@@ -23,6 +23,13 @@ class EffectWaveshaper : public EffectPreFiltered {
     float amplitude;     // b
     float angle;      // c
 
+  private:
+    int touchAreaX = 20;
+    int touchAreaY = 120;
+    int touchAreaWidth = 200;
+    int touchAreaHeight = 150;
+
+
 };
 
 
