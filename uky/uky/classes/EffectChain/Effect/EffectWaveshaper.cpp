@@ -3,18 +3,19 @@
 
 #include "../../../externs.h"
 
+AudioEffectWaveshaper waveshaper;
 EffectWaveshaper::EffectWaveshaper(EffectChain * effectChain, bool stereo) {
     this->stereo = stereo;
     this->wet = 1;
     this->effectChain = effectChain;
-    this->angle = 1;
+    this->depth = 1;
     this->length = 1;
     this->amplitude = 1;
     this->lowPass = 10000;
     this->highPass = 0;
 
 
-    this->effectLeft = new AudioEffectWaveshaper();
+    this->effectLeft = &waveshaper;
     if(this->stereo) this->effectRight = new AudioEffectWaveshaper(); 
     
     this->doMainConnections();
@@ -68,14 +69,9 @@ void EffectWaveshaper::mainScreen() {
     this->screen = new Screen(this);
 
     Input* k = new TwoKnobs(this->screen, 10, 40, 40, 40, 15);
-    k->setUpKnob("left", "angle", "Angle", 1, 3, this->angle);
-    k->setUpKnob("right", "amplitude", "Amplitude", 1, 3, this->amplitude);
+    k->setUpKnob("left", "depth", "Depth", 1, 3, this->depth);
+    k->setUpKnob("right", "wet", "Dry/Wet", 0, 100, this->wet*100);
     this->screen->addInput(k);
-
-    Input* k3 = new TwoKnobs(this->screen, 180, 40, 40, 40, 15);
-    k3->setUpKnob("left", "length", "Length", 0, 10, 0);
-    k3->setUpKnob("right", "wet", "Dry/Wet", 0, 100, this->wet*100);
-    this->screen->addInput(k3);
 
     Input* touchArea = new TouchArea(this->screen, "waveshape", this->touchAreaX, this->touchAreaY, this->touchAreaWidth, this->touchAreaHeight, "WaveShape");
     this->screen->addInput(touchArea);
@@ -88,10 +84,18 @@ void EffectWaveshaper::mainScreen() {
 void EffectWaveshaper::reloadWaveshape() {
     int length = 257;
     float shape[length] = {};
+
+
+    // functions:
+    // f(x) = x
+    // f(x) = 2x / (1 + |x|)
+    // f(x) = x^(1/3)
+    // f(x) = 
     for (int i = 0; i < length; i++) {
         float x = (i*1.00)/(length/2) - 1; // va de -1 a 1
-        float y = pow(x, 1/3);
+        float y = x/(1+abs(x));
         shape[i] = y;
+        // shape[i] = x;
     }
     
     this->effectLeft->shape((float *)shape, length);
@@ -108,16 +112,16 @@ void EffectWaveshaper::reloadWaveshape() {
     float valuesPerBar = length / bars;
     tft.fillRect(startX, startY, width, height, BLACK);
     for (float x = 0; x < length; x+=valuesPerBar) {
+      /*
       float avgY = 0;
       for (int x1 = x; x1 < valuesPerBar; x1++) avgY += shape[x1];
       avgY = avgY / valuesPerBar;
+      */
+      float avgY = shape[int(x)];
 
       float y = avgY * (height/2);
-      if (y > 0) 
-        tft.fillRect(x+startX, startY + (height/2) - y, barWidth, y, PRIMARY_0); // relleno de la barrita
-      else
-        tft.fillRect(x+startX, startY + height/2, barWidth, -y, PRIMARY_0); // relleno de la barrita
-      tft.fillRect(x+startX, startY + (height/2) - y, barWidth, 2, PRIMARY); // tope de la barrita
+      tft.fillRect(x+startX, startY + (height/2), barWidth, -y, PRIMARY_0); // relleno de la barrita
+      tft.fillRect(x+startX, startY + (height/2) - y, barWidth, 3, PRIMARY); // tope de la barrita
     }
 }
 
@@ -126,8 +130,8 @@ void EffectWaveshaper::event(String command, float param){
       this->destroyScreen(); // solo quiero borrar la screen, el efecto me interesa quedarmelo
       this->effectChain->mainScreen();
   }
-  if (command == "angle") {
-    this->angle = param;
+  if (command == "depth") {
+    this->depth = param;
     this->reloadWaveshape();
   }
   if (command == "length") {

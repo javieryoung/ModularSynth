@@ -18,16 +18,14 @@ class EffectWaveshaper : public EffectPreFiltered {
     AudioEffectWaveshaper * effectRight;
     
   protected:
-    // f(x) = sin(ax PI) bx + cx
-    float length;     // a
-    float amplitude;     // b
-    float angle;      // c
+    
+    float depth;      // c
 
   private:
     int touchAreaX = 20;
     int touchAreaY = 120;
     int touchAreaWidth = 200;
-    int touchAreaHeight = 150;
+    int touchAreaHeight = 100;
 
 
 };
