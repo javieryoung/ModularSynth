@@ -49,17 +49,20 @@ void TouchArea::draw() {
     
 }
 
-bool TouchArea::touched(float x, float y) {
-  bool result = (
-    x > this->x && x < this->x + this->w &&
-    y > this->y && y < this->y + this->h
-  ); 
-  float parameter = x * 10000 + y; // si la coordenada es (100, 50) queda 1.000.050
-  // lo des-hacemos usando
-  // int x = parameter / 10000;
-  // int y  = parameter - (x * 10000);
-  this->screen->event(this->id, parameter);
-  return result;
+bool TouchArea::touched(float px, float py) {
+    bool result = (
+        px > this->x && px < this->x + this->w &&
+        py > this->y && py < this->y + this->h
+    ); 
+    if (result) {
+
+        float parameter = int(px - this->x) * 100000 + int(py - this->y); // si la coordenada es (100, 50) queda 1.000.050
+        // lo des-hacemos usando
+        // int x = parameter / 100000;
+        // int y  = parameter - (x * 100000);
+        this->screen->event(this->id, parameter);
+    }
+    return result;
 }
 
 

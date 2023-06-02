@@ -13,10 +13,11 @@ class EffectWaveshaper : public EffectPreFiltered {
     void destroyScreen();
     void mainScreen() override;
     void event(String command, float param);
-    void reloadWaveshape();
     AudioEffectWaveshaper * effectLeft;
     AudioEffectWaveshaper * effectRight;
-    
+    void setWaveshape();
+    void drawWaveshape();
+    void redrawBar(int);
   protected:
     
     float depth;      // c
@@ -24,10 +25,11 @@ class EffectWaveshaper : public EffectPreFiltered {
   private:
     int touchAreaX = 20;
     int touchAreaY = 120;
-    int touchAreaWidth = 200;
-    int touchAreaHeight = 100;
-
-
+    float touchAreaWidth = 250;
+    float touchAreaHeight = 100;
+    int bars = 40;
+    int shapeLength = 129;
+    float shape[129] = {};
 };
 
 

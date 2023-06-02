@@ -30,6 +30,10 @@ class Knob : public Input
     float last_value; // only to know when to refresh
     long changed;
     Screen* screen;
+    
+  protected:
+    void drawKnob();
+    void drawText();
 
 };
 
@@ -54,46 +58,53 @@ Knob::~Knob() {
 String Knob::type() { return "Knob"; }
 
 void Knob::draw() {
+  
+  if (this->value != this->last_value) {
+    this->drawKnob();
+    this->drawText();
+    this->last_value = this->value;
+  }
+
+}
+
+void Knob::drawKnob() {
   float centerx = this->x + this->w/2;
   float centery = this->y + this->h/2;
   float r = min(this->w, this->h)/2;
-  if (this->value != this->last_value) {
-    // vaciar circulo anterior
-    for (int i = 0; i < r; i++) {
-      tft.fillCircle(centerx, centery, i, BLACK);
-    }
-    // borrar texto anterior
-    tft.fillRect(this->x, this->y + this->h+5, this->w, 22, BLACK);
-
-    // dibujar circulo
-    int thick = 2;
-    for (int i = 0; i < thick; i++) {
-        tft.drawCircle(centerx, centery, r-i, PRIMARY);
-    }
-    // Knob line:
-    float angle = this->value/this->maxVal * PI*1.5 - (2*PI)-(PI*1.25);
-    float catOp = sin(angle) * r;
-    float catAdy = cos(angle) * r;
-    tft.drawLine(centerx, centery, centerx+catAdy, centery+catOp, PRIMARY);
-    tft.fillCircle(centerx, centery, r/2, BLACK);
-    
-    this->last_value = this->value;
+  
+  // vaciar circulo anterior
+  for (int i = 0; i < r; i++) {
+    tft.fillCircle(centerx, centery, i, BLACK);
   }
   
-
-
+  // dibujar circulo
+  int thick = 2;
+  for (int i = 0; i < thick; i++) {
+      tft.drawCircle(centerx, centery, r-i, PRIMARY);
+  }
   
+  // Knob line:
+  float angle = this->value/this->maxVal * PI*1.5 - (2*PI)-(PI*1.25);
+  float catOp = sin(angle) * r;
+  float catAdy = cos(angle) * r;
+  tft.drawLine(centerx, centery, centerx+catAdy, centery+catOp, PRIMARY);
+  tft.fillCircle(centerx, centery, r/2, BLACK);
+}
+
+void Knob::drawText() {
+  float centerx = this->x + this->w/2;
+  float centery = this->y + this->h/2;
+  float r = min(this->w, this->h)/2;
+  // borrar texto anterior
+  tft.fillRect(this->x, this->y + this->h+5, this->w, 22, BLACK);
 
   if (millis() - this->changed > 1000) {
-    // borrar texto anterior
-    tft.fillRect(this->x, this->y + this->h+5, this->w, 22, BLACK);
     printCenteredString(this->label, centerx, centery + r+5 + TEXT_HEIGHT);
   } else {
-    // borrar texto anterior
-    tft.fillRect(this->x, this->y + this->h+5, this->w, 22, BLACK);
     printCenteredString(this->value, centerx, centery + r+5 + TEXT_HEIGHT);
   }
 }
+
 
 bool Knob::touched(float x, float y) {
   return (
