@@ -92,6 +92,7 @@ void EffectWaveshaper::mainScreen() {
 void EffectWaveshaper::setWaveshape() {
   this->effectLeft->shape((float *)this->shape, this->shapeLength);
   if (this->stereo) this->effectRight->shape((float *)this->shape, this->shapeLength);
+  for (int x = 0; x < this->shapeLength; x++) Serial.println(this->shape[x]);
 }
 void EffectWaveshaper::drawWaveshape() {
   // DIBUJAR WAVESHAPE
@@ -158,7 +159,7 @@ void EffectWaveshaper::event(String command, float param){
     for (float i = barTouched*valuesPerBar; i < barTouched*valuesPerBar + valuesPerBar; i++) {
       this->shape[int(i)] = newValue;
     }
-    
+
     this->setWaveshape();
     this->redrawBar(barTouched);
   }
