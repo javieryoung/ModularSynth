@@ -133,9 +133,9 @@ void setup() {
 
   pinMode(buttonPinLeft, INPUT_PULLDOWN);
   pinMode(buttonPinRight, INPUT_PULLDOWN);
-  pinMode(1, INPUT_PULLDOWN);
-  pinMode(0, INPUT_PULLDOWN);
-  pinMode(4, INPUT_PULLDOWN);
+  pinMode(1,  INPUT_PULLDOWN);
+  pinMode(0,  INPUT_PULLDOWN);
+  pinMode(4,  INPUT_PULLDOWN);
   pinMode(22, INPUT_PULLDOWN);
 
   SPI.setMOSI(7);
@@ -207,7 +207,7 @@ void loop(void) {
     if (currentScreen != NULL) currentScreen->touched(px, py, p.z);
   }
   long nowInMillis = millis();
-  if (nowInMillis - _lastUpdate > 100) {
+  if (nowInMillis - _lastUpdate > 50) {
     _lastUpdate = millis();
     long newLeft, newRight;
     newLeft = encoderLeft.read();
@@ -226,8 +226,10 @@ void loop(void) {
     if (newRight != positionRight) {
       if(newRight < positionRight) {
         if (currentScreen != NULL) currentScreen->moved("right", 1.0);
+        Serial.println("Right +1");
       } else {
         if (currentScreen != NULL) currentScreen->moved("right", -1.0);
+        Serial.println("Right -1");
       }
       positionRight = newRight;
     }

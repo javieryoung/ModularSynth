@@ -80,6 +80,13 @@ void EffectWaveshaper::mainScreen() {
   k->setUpKnob("right", "wet", "Dry/Wet", 0, 100, this->wet*100);
   this->screen->addInput(k);
 
+  Input* symmetrizeButton = new Button(this->screen, "symmetrizeButton", 220, 20, 70, 40, "Symm");
+  this->screen->addInput(symmetrizeButton);
+
+  Input* presetsButton = new Button(this->screen, "presetsButton", 220, 75, 70, 40, "Presets");
+  this->screen->addInput(presetsButton);
+  
+
   Input* touchArea = new TouchArea(this->screen, "waveshape", this->touchAreaX, this->touchAreaY, this->touchAreaWidth, this->touchAreaHeight, "WaveShape");
   this->screen->addInput(touchArea);
 
@@ -92,13 +99,14 @@ void EffectWaveshaper::mainScreen() {
 void EffectWaveshaper::setWaveshape() {
   this->effectLeft->shape((float *)this->shape, this->shapeLength);
   if (this->stereo) this->effectRight->shape((float *)this->shape, this->shapeLength);
-  for (int x = 0; x < this->shapeLength; x++) Serial.println(this->shape[x]);
+  // for (int x = 0; x < this->shapeLength; x++) Serial.println(this->shape[x]);
 }
+
 void EffectWaveshaper::drawWaveshape() {
   // DIBUJAR WAVESHAPE
   // va desde (40, 100) a (297, 250), o sea de 257x150
   int width = this->touchAreaWidth;
-  int height = this->touchAreaHeight; // promediamos cada punto en 3 para poder dibujar barritas
+  int height = this->touchAreaHeight; 
   int startX = this->touchAreaX;
   int startY = this->touchAreaY;
   int bars = this->bars;
@@ -114,8 +122,10 @@ void EffectWaveshaper::drawWaveshape() {
     float avgY = this->shape[int(x)];
 
     float y = avgY * (height/2);
+    
     tft.fillRect((x/valuesPerBar)*barWidth+startX, startY + (height/2), barWidth, -y, PRIMARY_0);     // relleno de la barrita
     tft.fillRect((x/valuesPerBar)*barWidth+startX, startY + (height/2) - y, barWidth, 3, PRIMARY);    // tope de la barrita
+    
   }
 }
 
@@ -139,6 +149,7 @@ void EffectWaveshaper::redrawBar(int bar) {
 }
 
 void EffectWaveshaper::event(String command, float param){
+  Serial.println(command);
   if (command == "clicked" && param == 0) { // click sobre izquierdo
     this->destroyScreen(); // solo quiero borrar la screen, el efecto me interesa quedarmelo
     this->effectChain->mainScreen();
@@ -146,6 +157,12 @@ void EffectWaveshaper::event(String command, float param){
   if (command == "wet") {
     this->wet = param/100;
     this->setWet();
+  }
+  if (command == "symmetrizeButton") {
+    
+  }
+  if (command == "presetsButton") {
+    
   }
   if (command == "waveshape") {
     int x = param / 100000;
