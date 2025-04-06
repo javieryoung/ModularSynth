@@ -10,6 +10,7 @@ class Pot : public Input
 {
   public:
     Pot();
+    Pot(int);
     virtual void setPin(int pin);
     virtual float read();
     virtual void setMin(float);
@@ -30,6 +31,10 @@ class Pot : public Input
 
 
 Pot::Pot() { }
+
+Pot::Pot(int pin) {
+  this->setPin(pin);
+}
 
 void Pot::setPin(int pin) {
   _pin = pin;
